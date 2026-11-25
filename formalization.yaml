@@ -18,7 +18,7 @@ project:
     BasinFiveCert00..13, and EvenBasesCert) verify finite integer inequalities
     by Init-only kernel reduction (rfl). Companion working paper, exact
     external checkers, and logged prior-work searches are published at
-    https://mathdiscoveries.org/results/last-digit-collatz.
+    https://mathdiscoveries.org/results/the-ouroboros-conjecture.
   authors:
     - "Tyler B. Hughes"
   license: "Apache-2.0"
@@ -33,9 +33,9 @@ sources:
   - title: "The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps Across Many Bases"
     authors:
       - "Tyler B. Hughes"
-    id: "https://mathdiscoveries.org/results/last-digit-collatz"
+    id: "https://mathdiscoveries.org/results/the-ouroboros-conjecture"
     type: original-proof
-    location: "Companion page, working paper, verification archives, and prior-work search log at https://mathdiscoveries.org/results/last-digit-collatz"
+    location: "Companion page, working paper, verification archives, and prior-work search log at https://mathdiscoveries.org/results/the-ouroboros-conjecture"
     relationship: other
     author_endorsement: participated
     note: >-

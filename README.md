@@ -80,7 +80,7 @@ zero `native_decide`, and Lean's standard axioms (`propext`, `Classical.choice`,
 Companion working paper, external verification archives (sharpened $N_1$ bounds, exhaustive
 sweep and cycle enumeration through $10^{15}$, and the $905/999$ odd-base absorption
 survey), and prior-work search logs live at
-https://mathdiscoveries.org/results/last-digit-collatz.
+https://mathdiscoveries.org/results/the-ouroboros-conjecture.
 
 ## Build & Verify
 
