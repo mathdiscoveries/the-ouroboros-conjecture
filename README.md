@@ -38,9 +38,9 @@ zero `native_decide`, and Lean's standard axioms (`propext`, `Classical.choice`,
    `thm_basin1_density_zero`, `thm_cantor`): every odd member reaching $1$ satisfies
    $n \equiv 1, 15, \text{or } 17 \pmod{30}$; the $2$-adic closure $\overline{B_1}$ in
    $\mathbb{Z}_2$ equals $(30\mathcal{K}_1 + 1) \cup (30\mathcal{K}_{15} + 15) \cup (30\mathcal{K}_{17} + 17)$,
-   is nowhere dense, satisfies the infinite-hit / infinite-exit ball dichotomy, admits a
-   surjective ultrametric isometry onto $\Sigma = \{0, 1000, 1001\}^\omega$ ($r \in \{1, 17\}$)
-   and $000\Sigma \sqcup 001\Sigma$ ($r = 15$), has positive finite $\beta$-dimensional
+   is nowhere dense, satisfies the infinite-hit / infinite-exit ball dichotomy, is mapped
+   by the halving-itinerary map $\Psi_r$ (`itin`) via a surjective ultrametric isometry
+   onto $\Sigma = \{0, 1000, 1001\}^\omega$ ($r \in \{1, 17\}$) and $000\Sigma \sqcup 001\Sigma$ ($r = 15$), has positive finite $\beta$-dimensional
    Hausdorff measure $\frac{1}{2} \le \mathcal{H}^\beta(\overline{B_1}) \le a^{-2} + a < 3.031$,
    exact Hausdorff and box-counting dimension $\dim_H(\overline{B_1}) = \dim_B(\overline{B_1}) = \beta = -\log_2 a \approx 0.62638214$,
    and elementary bounds $a_1^9 X^\gamma \le N_1(\lfloor X \rfloor) \le X^\beta$ for all real $X \ge 1$.

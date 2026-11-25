@@ -296,23 +296,19 @@ def digitVal (i : Fin 5) : ℕ :=
   | 3 => 7
   | _ => 9
 /-- Proof term that every odd decimal digit is positive. -/
-lemma digitValPos (i : Fin 5) : 0 < digitVal i := by
-  unfold digitVal
-  match i.val with
-  | 0 => exact Nat.zero_lt_one
-  | 1 => exact Nat.succ_pos 2
-  | 2 => exact Nat.succ_pos 4
-  | 3 => exact Nat.succ_pos 6
-  | _ + 4 => exact Nat.succ_pos 8
+lemma digitValPos (i : Fin 5) : 0 < digitVal i :=
+  Fin.cases (motive := fun j : Fin 5 => 0 < digitVal j) Nat.zero_lt_one
+    (Fin.cases (Nat.succ_pos 2)
+      (Fin.cases (Nat.succ_pos 4)
+        (Fin.cases (Nat.succ_pos 6)
+          (Fin.cases (Nat.succ_pos 8) (fun j => j.elim0))))) i
 /-- Proof term that every odd decimal digit divides `1575`. -/
-lemma digitValDvd1575 (i : Fin 5) : digitVal i ∣ 1575 := by
-  unfold digitVal
-  match i.val with
-  | 0 => decide
-  | 1 => decide
-  | 2 => decide
-  | 3 => decide
-  | _ + 4 => change 9 ∣ 1575; decide
+lemma digitValDvd1575 (i : Fin 5) : digitVal i ∣ 1575 :=
+  Fin.cases (motive := fun j : Fin 5 => digitVal j ∣ 1575) ⟨1575, rfl⟩
+    (Fin.cases ⟨525, rfl⟩
+      (Fin.cases ⟨315, rfl⟩
+        (Fin.cases ⟨225, rfl⟩
+          (Fin.cases ⟨175, rfl⟩ (fun j => j.elim0))))) i
 /-- Decidable predecessor congruence condition on `x = 2^v * o` for digit `digitVal i`. -/
 def predCondBool (i : Fin 5) (x : ℕ) : Bool :=
   match i.val with
@@ -397,6 +393,9 @@ def SigmaBits : Set (ℕ → Bool) :=
 /-- Image of `𝒦_15`: disjoint union `000 Σ ⊔ 001 Σ`. -/
 def Sigma15Bits : Set (ℕ → Bool) :=
   (prependBits [false, false, false] '' SigmaBits) ∪ (prependBits [false, false, true] '' SigmaBits)
+/-- Halving-itinerary map `Ψ_r : ℤ_[2] → {0, 1}^ℕ` recording the parity of `⌊T^j(30 x + r) / 30⌋`. -/
+noncomputable def itin (r : ℕ) (x : ℤ_[2]) (j : ℕ) : Bool :=
+  decide ((T^[j] (30 * x.appr (j + 1) + r) / 30) % 2 = 1)
 /-- Minimum cardinality of a finite cover of `s` with sets of extended diameter `≤ ε`. -/
 noncomputable def boxCoverNum {X : Type*} [PseudoEMetricSpace X] (s : Set X) (ε : ℝ) : ℕ :=
   sInf {N : ℕ | ∃ F : Finset (Set X), F.card = N ∧ s ⊆ ⋃ U ∈ F, U ∧
@@ -488,12 +487,11 @@ theorem thm_cantor :
           {n : ℕ | 1 ≤ n ∧ Reaches f n 1 ∧ (n : ℤ_[2]) ∈ Metric.ball x ρ}.Infinite ∧
           {n : ℕ | 1 ≤ n ∧ InABC n ∧ ExitsAt19Or23 n ∧ (n : ℤ_[2]) ∈ Metric.ball x ρ}.Infinite) ∧
         IsNowhereDense (closure B1Padic)) ∧
-      ((∃ Ψ : ℕ → ℤ_[2] → (ℕ → Bool),
-          (∀ r x y, x = y ↔ Ψ r x = Ψ r y) ∧
+      (((∀ r x y, x = y ↔ itin r x = itin r y) ∧
           (∀ r x y, x ≠ y →
-            dist x y = (2 : ℝ) ^ (-((sInf {j : ℕ | Ψ r x j ≠ Ψ r y j} : ℕ) : ℤ))) ∧
-          (∀ r : ℕ, (r = 1 ∨ r = 17) → Ψ r '' KCal r = SigmaBits) ∧
-          Ψ 15 '' KCal 15 = Sigma15Bits) ∧
+            dist x y = (2 : ℝ) ^ (-((sInf {j : ℕ | itin r x j ≠ itin r y j} : ℕ) : ℤ))) ∧
+          (∀ r : ℕ, (r = 1 ∨ r = 17) → itin r '' KCal r = SigmaBits) ∧
+          itin 15 '' KCal 15 = Sigma15Bits) ∧
         Disjoint (prependBits [false, false, false] '' SigmaBits)
           (prependBits [false, false, true] '' SigmaBits) ∧
         ENNReal.ofReal (1 / 2) ≤
