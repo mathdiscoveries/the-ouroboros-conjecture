@@ -14,7 +14,7 @@ public import Mathlib.MeasureTheory.Measure.Hausdorff
 public import Mathlib.Topology.MetricSpace.HausdorffDimension
 
 /-!
-# Palomar Challenge: The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps Across Many Bases
+# Palomar Challenge: The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps
 Defines the base-`b` last-digit Collatz map `f_b`, the base-10 Ouroboros map `f = f_b 10`,
 the open conjecture `OuroborosConjecture`, the basin counting functions `N1`, `N1All`, `N5`,
 `N5All`, the Terras exceptional sets `E_k` and `NoDescent`, the even-base Markov drift

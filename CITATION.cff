@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 type: software
 message: "If you use or cite this Lean 4 formalization, please cite it using the metadata below."
-title: "The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps Across Many Bases"
+title: "The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps"
 authors:
   - family-names: "Hughes"
     given-names: "Tyler B."

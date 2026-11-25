@@ -1,4 +1,4 @@
-# The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps Across Many Bases
+# The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps
 
 Lean 4 (`v4.35.0`) + Mathlib formalization of the base-$b$ last-digit Collatz family
 $f_b(n) = n / 2$ (even $n$), $f_b(n) = (n \bmod b)\,n + 1$ (odd $n$), centered on the
