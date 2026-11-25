@@ -7,18 +7,18 @@ project:
     Lean 4 (v4.35.0) + Mathlib formalization of the base-b last-digit Collatz
     family f_b(n) = n/2 (even n) and (n mod b)*n + 1 (odd n), focusing on the
     base-10 Ouroboros map f = f_10 and stating the open OuroborosConjecture
-    definition alongside 35 unconditionally proved compared theorems (zero sorry,
+    definition alongside 38 unconditionally proved compared theorems (zero sorry,
     zero native_decide, standard axioms only). Main results in the companion
-    paper: 13 of 16 proved main results in Lean 4 (81%) · 3 of 16 by external
-    computation (sharpened N_1 bounds, cycles through 10^15, and 905/999
-    odd-base absorption survey; the sharpened N_5 bound of Theorem 8 Part 2 is
-    verified in Lean 4) · Global conjecture open. Within this package, 16
-    library modules in Ouroboros/ (plus Challenge.lean and Solution.lean)
-    import Mathlib while the 16 finite certificate shards (BasinFiveCertData,
-    BasinFiveCert00..13, and EvenBasesCert) verify finite integer inequalities
-    by Init-only kernel reduction (rfl). Companion working paper, exact
-    external checkers, and logged prior-work searches are published at
-    https://mathdiscoveries.org/results/the-ouroboros-conjecture.
+    paper: 15 of 16 proved main results in Lean 4 (94%) · 1 of 16 by external
+    computation (exhaustive sweep and cycle lower bounds through 10^15) · 0 by
+    written proof · Global conjecture open. Within this package, 19 library
+    modules in Ouroboros/ (plus Challenge.lean and Solution.lean) import
+    Mathlib directly while the 104 finite certificate shards
+    (BasinFiveCert*, EvenBasesCert, BasinOneLowerCert*, BasinOneUpperCert*,
+    and OddSurveyCert*) verify finite integer inequalities by Init-only kernel
+    reduction (rfl). Companion working paper, exact external checkers, and
+    logged prior-work searches are published at
+    https://mathdiscoveries.org/results/the-ouroboros-conjecture.html.
   authors:
     - "Tyler B. Hughes"
   license: "Apache-2.0"
@@ -33,9 +33,9 @@ sources:
   - title: "The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps"
     authors:
       - "Tyler B. Hughes"
-    id: "https://mathdiscoveries.org/results/the-ouroboros-conjecture"
+    id: "https://mathdiscoveries.org/results/the-ouroboros-conjecture.html"
     type: original-proof
-    location: "Companion page, working paper, verification archives, and prior-work search log at https://mathdiscoveries.org/results/the-ouroboros-conjecture"
+    location: "Companion page, working paper, verification archives, and prior-work search log at https://mathdiscoveries.org/results/the-ouroboros-conjecture.html"
     relationship: other
     author_endorsement: participated
     note: >-
@@ -129,30 +129,30 @@ related_formalizations: []
 status:
   scope: >-
     Unconditionally proved in Lean 4 (v4.35.0) + Mathlib with standard axioms
-    only (zero sorry, zero native_decide; 16 library modules in Ouroboros/ plus
-    Challenge and Solution import Mathlib while the 16 finite certificate
-    shards use Init-only kernel reduction): 35 compared theorems covering
-    base-4 Collatz equivalence and bases 2 and 5, base-10 exponential Terras
-    descent (p_k <= 1.124953 * 0.996423^k) and density-one descent, complete
-    all-even-base stopping-time dichotomy (p_infty(b) = 0 iff b in {2, 4, 6, 10}),
-    base-10 basin-of-1 modulo-30 residue law, exact 2-adic Cantor closure and
-    ultrametric isometry onto Sigma and 000 Sigma u 001 Sigma, positive finite
-    Hausdorff measure and exact dim_H = dim_B = beta = -log_2 a, elementary
-    quartic bounds a_1^9 X^gamma <= N_1(floor X) <= X^beta, and density zero,
-    individual child-weight tree charging and unconditional basin-of-5 lower
-    bound N_5(X) > 0.02134 * X^(13/20) (Q = 14175 QuadTree kernel certificate)
-    with strict asymptotic separation N_1(X)/N_5(X) -> 0, complete even-base
-    drift sign classification, near-zero band classification, and logarithmic
-    drift growth, odd-base runaway divergence, rootless trapdoor density 1/b,
-    and base-17 certified divergence, base-10 cycle digit-cancellation,
-    halving-budget, K > 64000 tail, and unconditional m <= 3 odd-cycle
-    classification, and complete congruence-class completions and exact base-b
-    suffix-closure Hausdorff and box-counting dimension (log u + t log lambda)/log b
-    in every base b >= 2. Main results in the companion paper: 13 of 16 proved
-    main results in Lean 4 (81%) · 3 of 16 by external computation (sharpened
-    N_1 bounds, cycles through 10^15, and 905/999 odd-base absorption survey;
-    the sharpened N_5 bound of Theorem 8 Part 2 is verified in Lean 4) · Global
-    conjecture open.
+    only (zero sorry, zero native_decide; 19 library modules in Ouroboros/ plus
+    Challenge and Solution import Mathlib directly while the 104 finite
+    certificate shards use Init-only kernel reduction): 38 compared theorems
+    covering base-4 Collatz equivalence and bases 2 and 5, base-10 exponential
+    Terras descent (p_k <= 1.124953 * 0.996423^k) and density-one descent,
+    complete all-even-base stopping-time dichotomy (p_infty(b) = 0 iff b in
+    {2, 4, 6, 10}), base-10 basin-of-1 modulo-30 residue law, exact 2-adic
+    Cantor closure and ultrametric isometry onto Sigma and 000 Sigma u 001 Sigma,
+    positive finite Hausdorff measure and exact dim_H = dim_B = beta = -log_2 a,
+    elementary quartic bounds a_1^9 X^gamma <= N_1(floor X) <= X^beta,
+    sharpened pure-kernel basin bounds (0.0145 X^(399/800) <= N_1(X) <= C X^0.6245
+    with strict separation limsup (log N_1 / log X) <= 0.6245 < beta = dim_H,
+    individual child-weight charging yielding N_5(X) > 0.02134 X^(13/20), and
+    N_1(X)/N_5(X) <= C X^(-0.0255) -> 0), complete even-base drift
+    classification, universal odd-base Markov absorption for all odd b >= 3
+    and certified 905/999 odd-base survey through b <= 1999 (27 trap-only +
+    878 split rational densities, plus explicit b = 3, 5, 7, 13 evaluations),
+    base-10 cycle digit-cancellation, halving-budget, K > 64000 tail, and
+    unconditional m <= 3 odd-cycle classification, and complete congruence-class
+    completions and exact base-b suffix-closure Hausdorff and box-counting
+    dimension (log u + t log lambda)/log b in every base b >= 2. Main results
+    in the companion paper: 15 of 16 proved main results in Lean 4 (94%) · 1 of
+    16 by external computation (exhaustive sweep and cycle lower bounds through
+    10^15) · 0 by written proof · Global conjecture open.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Quot.sound", "Classical.choice"]
@@ -164,9 +164,9 @@ automation:
       framework: "AI research agent pipeline built and directed by Tyler B. Hughes"
       tool_setup: >-
         Autonomous builder, adversarial falsifier, and cross-model reviewer
-        agents formulated the theorems, generated the finite Q = 14175 QuadTree
-        and even-base certificates, wrote the Lean 4 + Mathlib formalization,
-        and verified every declaration in the kernel.
+        agents formulated the theorems, generated the finite QuadTree,
+        weighted-charging, and odd-survey certificates, wrote the Lean 4 +
+        Mathlib formalization, and verified every declaration in the kernel.
       cost:
         wall_time: "not tracked"
         spend_usd: "not tracked"
@@ -181,10 +181,9 @@ automation:
 fidelity:
   divergences: >-
     The global OuroborosConjecture (defined formally in Challenge.lean) is open
-    and not proved. Main results in the companion paper: 13 of 16 proved main
-    results in Lean 4 (81%) · 3 of 16 by external computation (sharpened N_1
-    bounds, cycles through 10^15, and 905/999 odd-base absorption survey; the
-    sharpened N_5 bound of Theorem 8 Part 2 is verified in Lean 4) · Global
+    and not proved. Main results in the companion paper: 15 of 16 proved main
+    results in Lean 4 (94%) · 1 of 16 by external computation (exhaustive sweep
+    and cycle lower bounds through 10^15) · 0 by written proof · Global
     conjecture open.
 
 review:
@@ -193,11 +192,11 @@ review:
     - "Internal adversarial falsifier and cross-family blind referee agents"
   notes: >-
     Checked by separate internal falsifier and cross-family (anthropic Claude
-    Opus) blind statement-fidelity referee agents, which graded all five added
-    modules PASS (exact), and audited for standard axioms only via
-    Ouroboros/Verify.lean. Independent mechanical Lean checking and automated
-    editorial checks are recorded in Palomar's report. No human mathematician
-    has yet refereed the proof.
+    Opus) blind statement-fidelity referee agents across all newly added
+    modules, and audited for standard axioms only via Ouroboros/Verify.lean and
+    Lean 4.35 lake comparator. Independent mechanical Lean checking and
+    automated editorial checks are recorded in Palomar's report. No human
+    mathematician has yet refereed the proof.
 
 alignment:
   namespace: "OuroborosChallenge"
@@ -366,7 +365,7 @@ alignment:
       lean: "OuroborosChallenge.thm_cantor"
       module: "Challenge"
       status: proved
-      note: "2-adic closure of B_1, isometry onto Sigma / 000 Sigma u 001 Sigma, dim_H = dim_B = beta, and a_1^9 X^gamma <= N_1(floor X) <= X^beta."
+      note: "2-adic closure of B_1, explicit isometry itin onto Sigma / 000 Sigma u 001 Sigma, dim_H = dim_B = beta, and a_1^9 X^gamma <= N_1(floor X) <= X^beta."
     - source: "Congruence-class completion dichotomy for B_5 and B_1 (Theorem 29)"
       lean: "OuroborosChallenge.thm_suffix_class"
       module: "Challenge"
@@ -377,5 +376,20 @@ alignment:
       module: "Challenge"
       status: proved
       note: "dim_H = dim_B = (log u + t log lambda) / log b for B_1 in base b = 2^t u; 8-d.p. values in bases 2, 10, 7; full interval [0, 1] for B_5."
+    - source: "Complete sharpened basin bounds and strict 2-adic/Archimedean separation (Theorem 8)"
+      lean: "OuroborosChallenge.thm_basin_sharp"
+      module: "Challenge"
+      status: proved
+      note: "0.0145 X^(399/800) <= N_1(floor X) <= C X^0.6245, limsup <= 0.6245 < beta = dim_H(closure B_1), N_5(X) > 0.02134 X^(13/20), and N_1(X)/N_5(X) <= C X^(-0.0255)."
+    - source: "Universal odd-base Markov absorption and certified 905/999 odd-base survey through b <= 1999 (Theorem 13)"
+      lean: "OuroborosChallenge.thm_odd_survey"
+      module: "Challenge"
+      status: proved
+      note: "Universal lower-density bounds for all odd b >= 3 plus 27 trap-only and 878 split rational densities across 905 of 999 odd bases."
+    - source: "Concrete odd-base table evaluations for b = 3, 5, 7, 13"
+      lean: "OuroborosChallenge.thm_odd_table_examples"
+      module: "Challenge"
+      status: proved
+      note: "Exact canonical masses and densities for b = 3, 5, 7, and 13 (tau_13 = 13210/16991, rho_13 = 3781/16991)."
 
 acknowledgements: "Built on Lean 4 and Mathlib."

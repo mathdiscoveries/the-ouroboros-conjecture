@@ -10,6 +10,7 @@ public import Mathlib.Topology.Instances.Nat
 public import Mathlib.Data.Nat.Factorization.Basic
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.NumberTheory.Padics.RingHoms
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Mathlib.MeasureTheory.Measure.Hausdorff
 public import Mathlib.Topology.MetricSpace.HausdorffDimension
 public import Ouroboros
@@ -645,5 +646,320 @@ theorem cor_suffix_dimension :
   · dsimp only
     rw [← hs10]
     exact ⟨hb10_dim, hb10_lo, hb10_hi⟩
+
+/-- Odd-base attraction set `R(b) = {n ≥ 1 | f_b^k(n) = 1 for some k}`. -/
+def RSet (b : ℕ) : Set ℕ := {n | 1 ≤ n ∧ Reaches (f_b b) n 1}
+/-- Odd-base divergence set `E(b) = {n ≥ 1 | f_b^i(n) → ∞}`. -/
+def DivSet (b : ℕ) : Set ℕ :=
+  {n | 1 ≤ n ∧ Filter.Tendsto (fun i => (f_b b)^[i] n) Filter.atTop Filter.atTop}
+/-- Congruence cylinder `(x mod b, c mod 2^j)` for the odd-base Markov chain. -/
+structure OddCyl where
+  x : ℕ
+  c : ℕ
+  j : ℕ
+/-- Deterministic one-step cylinder transition map for odd base `b ≥ 3`. -/
+noncomputable def cylStep (b : ℕ) (C : OddCyl) : OddCyl :=
+  if C.c % 2 = 0 then
+    ⟨(C.x * ((b + 1) / 2)) % b, (C.c / 2) % 2 ^ (C.j - 1), C.j - 1⟩
+  else
+    let a := padicValNat 2 C.x
+    ⟨(C.x * C.x + 1) % b, (C.x * C.c + 1) % 2 ^ (C.j + a), C.j + a⟩
+/-- Cylinder inclusion predicate `C1 ⊆ C2` modulo `(b, 2^{C2.j})`. -/
+def CylSubset (b : ℕ) (C1 C2 : OddCyl) : Prop :=
+  C1.x % b = C2.x % b ∧ C2.j ≤ C1.j ∧ C1.c % 2 ^ C2.j = C2.c % 2 ^ C2.j
+/-- Deterministic stretch from `⟨x, 1, 1⟩` absorbs into the zero-digit trap (`x_s = 0 mod b`). -/
+def IsTrapStretch (b x : ℕ) : Prop :=
+  ∃ s : ℕ, 1 ≤ s ∧
+    (∀ i < s, 1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).x ∧
+              ((cylStep b)^[i] ⟨x, 1, 1⟩).x < b ∧
+              1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).j) ∧
+    ((cylStep b)^[s] ⟨x, 1, 1⟩).x = 0
+/-- Deterministic stretch from `⟨x, 1, 1⟩` returns to a zero-bit state `⟨y, 0, 0⟩`. -/
+def IsZeroStretch (b x y : ℕ) : Prop :=
+  1 ≤ y ∧ y < b ∧ ∃ s : ℕ, 1 ≤ s ∧
+    (∀ i < s, 1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).x ∧
+              ((cylStep b)^[i] ⟨x, 1, 1⟩).x < b ∧
+              1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).j) ∧
+    (cylStep b)^[s] ⟨x, 1, 1⟩ = ⟨y, 0, 0⟩
+/-- Deterministic stretch from `⟨x, 1, 1⟩` enters a self-returning escape cylinder `C0`. -/
+def IsCertifiedEscape (b x : ℕ) : Prop :=
+  ∃ (s p : ℕ) (C0 : OddCyl),
+    1 ≤ p ∧
+    (∀ i ≤ s, 1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).x ∧
+              ((cylStep b)^[i] ⟨x, 1, 1⟩).x < b ∧
+              1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).j) ∧
+    CylSubset b ((cylStep b)^[s] ⟨x, 1, 1⟩) C0 ∧
+    (∀ i ≤ p, 1 ≤ ((cylStep b)^[i] C0).x ∧
+              ((cylStep b)^[i] C0).x < b ∧
+              1 ≤ ((cylStep b)^[i] C0).j) ∧
+    CylSubset b ((cylStep b)^[p] C0) C0
+/-- Canonical outcome of the deterministic stretch from `⟨x, 1, 1⟩` in the odd-base Markov chain. -/
+inductive OddStretchOutcome where
+  | trap
+  | escape
+  | toState (y : ℕ)
+  | unresolved
+/-- Canonical certificate-free stretch outcome for residue `x` modulo `b`. -/
+noncomputable def oddStretchOutcome (b x : ℕ) : OddStretchOutcome :=
+  open Classical in
+  if IsTrapStretch b x then .trap
+  else if IsCertifiedEscape b x then .escape
+  else if h : ∃ y, IsZeroStretch b x y then .toState (Classical.choose h)
+  else .unresolved
+/-- Finite-depth (`m`-step) Markov absorption probability into trap (`ZSet b`) from state `x`. -/
+noncomputable def oddTrapProb (b : ℕ) : ℕ → ℕ → ℝ
+  | 0, _ => 0
+  | m + 1, x =>
+    (1 / 2 : ℝ) * oddTrapProb b m ((x * ((b + 1) / 2)) % b) +
+    (1 / 2 : ℝ) * OddStretchOutcome.casesOn (oddStretchOutcome b x) 1 0 (fun y => oddTrapProb b m y) 0
+/-- Finite-depth (`m`-step) Markov absorption probability into escape (`DivSet b`) from state `x`. -/
+noncomputable def oddRunProb (b : ℕ) : ℕ → ℕ → ℝ
+  | 0, _ => 0
+  | m + 1, x =>
+    (1 / 2 : ℝ) * oddRunProb b m ((x * ((b + 1) / 2)) % b) +
+    (1 / 2 : ℝ) * OddStretchOutcome.casesOn (oddStretchOutcome b x) 0 1 (fun y => oddRunProb b m y) 0
+/-- Per-state infinite-horizon trap absorption probability `t_b(x) = sup_m oddTrapProb b m x`. -/
+noncomputable def oddTrapStateMass (b x : ℕ) : ℝ := ⨆ m, oddTrapProb b m x
+/-- Per-state infinite-horizon escape absorption probability `r_b(x) = sup_m oddRunProb b m x`. -/
+noncomputable def oddRunStateMass (b x : ℕ) : ℝ := ⨆ m, oddRunProb b m x
+/-- Canonical odd-base trap absorption mass `τ_b = (1 + ∑_{x=1}^{b-1} t_b(x)) / b`. -/
+noncomputable def oddTrapMass (b : ℕ) : ℝ :=
+  (1 + ∑ x ∈ Finset.Ico 1 b, oddTrapStateMass b x) / (b : ℝ)
+/-- Canonical odd-base escape absorption mass `ρ_b = (∑_{x=1}^{b-1} r_b(x)) / b`. -/
+noncomputable def oddRunMass (b : ℕ) : ℝ :=
+  (∑ x ∈ Finset.Ico 1 b, oddRunStateMass b x) / (b : ℝ)
+/-- All 999 odd bases `3 ≤ b ≤ 1,999`. -/
+def allOddBases1999 : Finset ℕ := (Finset.Icc 3 1999).filter (fun b => b % 2 = 1)
+
+private def toOuroCyl (C : OddCyl) : Ouroboros.OddCyl := ⟨C.x, C.c, C.j⟩
+private def fromOuroCyl (C : Ouroboros.OddCyl) : OddCyl := ⟨C.x, C.c, C.j⟩
+
+private lemma cylStep_toOuro (b : ℕ) (C : OddCyl) :
+    toOuroCyl (cylStep b C) = Ouroboros.cylStep b (toOuroCyl C) := by
+  unfold cylStep Ouroboros.cylStep toOuroCyl
+  split_ifs <;> rfl
+
+private lemma cylStep_iter_toOuro (b k : ℕ) (C : OddCyl) :
+    toOuroCyl ((cylStep b)^[k] C) = (Ouroboros.cylStep b)^[k] (toOuroCyl C) := by
+  induction k generalizing C with
+  | zero => rfl
+  | succ k ih =>
+    rw [Function.iterate_succ_apply, Function.iterate_succ_apply, ih, cylStep_toOuro]
+
+private lemma cylStep_iter_x (b k : ℕ) (C : OddCyl) :
+    ((cylStep b)^[k] C).x = ((Ouroboros.cylStep b)^[k] (toOuroCyl C)).x :=
+  congr_arg Ouroboros.OddCyl.x (cylStep_iter_toOuro b k C)
+
+private lemma cylStep_iter_c (b k : ℕ) (C : OddCyl) :
+    ((cylStep b)^[k] C).c = ((Ouroboros.cylStep b)^[k] (toOuroCyl C)).c :=
+  congr_arg Ouroboros.OddCyl.c (cylStep_iter_toOuro b k C)
+
+private lemma cylStep_iter_j (b k : ℕ) (C : OddCyl) :
+    ((cylStep b)^[k] C).j = ((Ouroboros.cylStep b)^[k] (toOuroCyl C)).j :=
+  congr_arg Ouroboros.OddCyl.j (cylStep_iter_toOuro b k C)
+
+private lemma cylStep_iter_init_toOuro (b k x : ℕ) :
+    toOuroCyl ((cylStep b)^[k] ⟨x, 1, 1⟩) = (Ouroboros.cylStep b)^[k] ⟨x, 1, 1⟩ :=
+  cylStep_iter_toOuro b k ⟨x, 1, 1⟩
+
+private lemma cylStep_iter_init_x (b k x : ℕ) :
+    ((cylStep b)^[k] ⟨x, 1, 1⟩).x = ((Ouroboros.cylStep b)^[k] ⟨x, 1, 1⟩).x :=
+  cylStep_iter_x b k ⟨x, 1, 1⟩
+
+private lemma cylStep_iter_init_j (b k x : ℕ) :
+    ((cylStep b)^[k] ⟨x, 1, 1⟩).j = ((Ouroboros.cylStep b)^[k] ⟨x, 1, 1⟩).j :=
+  cylStep_iter_j b k ⟨x, 1, 1⟩
+
+private lemma CylSubset_iff (b : ℕ) (C1 C2 : OddCyl) :
+    CylSubset b C1 C2 ↔ Ouroboros.CylSubset b (toOuroCyl C1) (toOuroCyl C2) := Iff.rfl
+
+private lemma IsTrapStretch_iff (b x : ℕ) :
+    IsTrapStretch b x ↔ Ouroboros.IsTrapStretch b x := by
+  unfold IsTrapStretch Ouroboros.IsTrapStretch
+  constructor <;> (rintro ⟨s, hs, hval, hend⟩; refine ⟨s, hs, fun i hi => ?_, ?_⟩)
+  · rw [← cylStep_iter_init_x, ← cylStep_iter_init_j]; exact hval i hi
+  · rw [← cylStep_iter_init_x]; exact hend
+  · rw [cylStep_iter_init_x, cylStep_iter_init_j]; exact hval i hi
+  · rw [cylStep_iter_init_x]; exact hend
+
+private lemma IsZeroStretch_iff (b x y : ℕ) :
+    IsZeroStretch b x y ↔ Ouroboros.IsZeroStretch b x y := by
+  unfold IsZeroStretch Ouroboros.IsZeroStretch
+  constructor <;> (rintro ⟨hy1, hyb, s, hs, hval, hend⟩; refine ⟨hy1, hyb, s, hs, fun i hi => ?_, ?_⟩)
+  · rw [← cylStep_iter_init_x, ← cylStep_iter_init_j]; exact hval i hi
+  · rw [← cylStep_iter_init_toOuro, hend]; rfl
+  · rw [cylStep_iter_init_x, cylStep_iter_init_j]; exact hval i hi
+  · have h := cylStep_iter_init_toOuro b s x
+    rw [hend] at h
+    cases heq : (cylStep b)^[s] ⟨x, 1, 1⟩ with
+    | mk cx cc cj =>
+      rw [heq] at h
+      simp only [toOuroCyl, Ouroboros.OddCyl.mk.injEq] at h
+      rcases h with ⟨rfl, rfl, rfl⟩; rfl
+
+private lemma IsCertifiedEscape_iff (b x : ℕ) :
+    IsCertifiedEscape b x ↔ Ouroboros.IsCertifiedEscape b x := by
+  unfold IsCertifiedEscape Ouroboros.IsCertifiedEscape
+  constructor
+  · rintro ⟨s, p, C0, hp, h1, hsub1, h2, hsub2⟩
+    refine ⟨s, p, toOuroCyl C0, hp, fun i hi => ?_, ?_, fun i hi => ?_, ?_⟩
+    · rw [← cylStep_iter_init_x, ← cylStep_iter_init_j]; exact h1 i hi
+    · rw [← cylStep_iter_init_toOuro]; exact (CylSubset_iff b _ _).mp hsub1
+    · rw [← cylStep_iter_x, ← cylStep_iter_j]; exact h2 i hi
+    · rw [← cylStep_iter_toOuro]; exact (CylSubset_iff b _ _).mp hsub2
+  · rintro ⟨s, p, C0, hp, h1, hsub1, h2, hsub2⟩
+    refine ⟨s, p, fromOuroCyl C0, hp, fun i hi => ?_, ?_, fun i hi => ?_, ?_⟩
+    · rw [cylStep_iter_init_x, cylStep_iter_init_j]; exact h1 i hi
+    · rw [CylSubset_iff, cylStep_iter_init_toOuro]; exact hsub1
+    · rw [cylStep_iter_x, cylStep_iter_j]; exact h2 i hi
+    · rw [CylSubset_iff, cylStep_iter_toOuro]; exact hsub2
+
+private def toOuroOutcome : OddStretchOutcome → Ouroboros.OddStretchOutcome
+  | .trap => .trap
+  | .escape => .escape
+  | .toState y => .toState y
+  | .unresolved => .unresolved
+
+private lemma oddStretchOutcome_eq (b x : ℕ) :
+    toOuroOutcome (oddStretchOutcome b x) = Ouroboros.oddStretchOutcome b x := by
+  classical
+  have hT : IsTrapStretch b x = Ouroboros.IsTrapStretch b x := propext (IsTrapStretch_iff b x)
+  have hE : IsCertifiedEscape b x = Ouroboros.IsCertifiedEscape b x := propext (IsCertifiedEscape_iff b x)
+  have hZ : (fun y => IsZeroStretch b x y) = (fun y => Ouroboros.IsZeroStretch b x y) :=
+    funext fun y => propext (IsZeroStretch_iff b x y)
+  unfold oddStretchOutcome Ouroboros.oddStretchOutcome
+  simp only [hT, hE, hZ]
+  split_ifs <;> rfl
+
+private lemma oddTrapProb_eq (b m x : ℕ) :
+    oddTrapProb b m x = Ouroboros.oddTrapProb b m x := by
+  induction m generalizing x with
+  | zero => rfl
+  | succ m ih =>
+    simp only [oddTrapProb, Ouroboros.oddTrapProb, ih]
+    have ho := oddStretchOutcome_eq b x
+    cases h : oddStretchOutcome b x with
+    | trap => rw [h] at ho; rw [← ho]; rfl
+    | escape => rw [h] at ho; rw [← ho]; rfl
+    | toState y => rw [h] at ho; rw [← ho]; simp only [toOuroOutcome]
+    | unresolved => rw [h] at ho; rw [← ho]; rfl
+
+private lemma oddRunProb_eq (b m x : ℕ) :
+    oddRunProb b m x = Ouroboros.oddRunProb b m x := by
+  induction m generalizing x with
+  | zero => rfl
+  | succ m ih =>
+    simp only [oddRunProb, Ouroboros.oddRunProb, ih]
+    have ho := oddStretchOutcome_eq b x
+    cases h : oddStretchOutcome b x with
+    | trap => rw [h] at ho; rw [← ho]; rfl
+    | escape => rw [h] at ho; rw [← ho]; rfl
+    | toState y => rw [h] at ho; rw [← ho]; simp only [toOuroOutcome]
+    | unresolved => rw [h] at ho; rw [← ho]; rfl
+
+private lemma oddTrapStateMass_eq (b x : ℕ) :
+    oddTrapStateMass b x = Ouroboros.oddTrapStateMass b x := by
+  simp only [oddTrapStateMass, Ouroboros.oddTrapStateMass, oddTrapProb_eq]
+
+private lemma oddRunStateMass_eq (b x : ℕ) :
+    oddRunStateMass b x = Ouroboros.oddRunStateMass b x := by
+  simp only [oddRunStateMass, Ouroboros.oddRunStateMass, oddRunProb_eq]
+
+private lemma oddTrapMass_eq (b : ℕ) :
+    oddTrapMass b = Ouroboros.oddTrapMass b := by
+  simp only [oddTrapMass, Ouroboros.oddTrapMass, oddTrapStateMass_eq]
+
+private lemma oddRunMass_eq (b : ℕ) :
+    oddRunMass b = Ouroboros.oddRunMass b := by
+  simp only [oddRunMass, Ouroboros.oddRunMass, oddRunStateMass_eq]
+
+private lemma countFrac_eq : countFrac = Ouroboros.countFrac := rfl
+private lemma ZSet_eq (b : ℕ) : ZSet b = Ouroboros.ZSet b := rfl
+private lemma RSet_eq (b : ℕ) : RSet b = Ouroboros.RSet b := rfl
+private lemma DivSet_eq (b : ℕ) : DivSet b = Ouroboros.DivSet b := rfl
+
+theorem thm_basin_sharp :
+    (∀ X : ℝ, 1 ≤ X →
+      (806 / 10000 : ℝ) * (X / 31) ^ ((399 : ℝ) / 800) ≤ (N1 ⌊X⌋₊ : ℝ) ∧
+      (145 / 10000 : ℝ) * X ^ ((399 : ℝ) / 800) ≤ (N1 ⌊X⌋₊ : ℝ)) ∧
+    (∃ C : ℝ, 0 < C ∧ ∀ X : ℝ, 1 ≤ X → (N1 ⌊X⌋₊ : ℝ) ≤ C * X ^ ((6245 : ℝ) / 10000)) ∧
+    (∃ a : ℝ, (0 < a ∧ a < 1 ∧ a + 2 * a ^ 4 = 1) ∧
+      let β := -Real.logb 2 a
+      Filter.limsup (fun X : ℝ => Real.log (N1 ⌊X⌋₊ : ℝ) / Real.log X) Filter.atTop ≤
+        (6245 / 10000 : ℝ) ∧
+      (6245 / 10000 : ℝ) < β ∧
+      (626382135 / 1000000000 : ℝ) < β ∧ β < (626382145 / 1000000000 : ℝ) ∧
+      dimH (closure B1Padic) = ENNReal.ofReal β ∧
+      ENNReal.ofReal (6245 / 10000 : ℝ) < dimH (closure B1Padic)) ∧
+    (∀ X : ℕ, 3 ≤ X →
+      ((98959 : ℝ) / ((2269527 : ℝ) * (3 : ℝ) ^ ((13 : ℝ) / 20))) * (X : ℝ) ^ ((13 : ℝ) / 20) ≤
+        (N5 X : ℝ) ∧
+      (2134 / 100000 : ℝ) * (X : ℝ) ^ ((13 : ℝ) / 20) < (N5 X : ℝ)) ∧
+    (∃ C : ℝ, 0 < C ∧ ∀ X : ℕ, 3 ≤ X →
+      (N1 X : ℝ) / (N5 X : ℝ) ≤ C * (X : ℝ) ^ (-(255 : ℝ) / 10000)) := by
+  obtain ⟨h1a, h1b, hsep, h2, hratio⟩ := Ouroboros.thm_basin_sharp
+  refine ⟨h1a, h1b, ?_, h2, hratio⟩
+  refine ⟨Ouroboros.aStar, ⟨Ouroboros.aStar_spec.1, Ouroboros.aStar_spec.2.1, Ouroboros.aStar_quartic⟩, ?_⟩
+  dsimp only
+  rw [← Ouroboros.beta_eq_neg_logb]
+  exact hsep
+
+theorem thm_odd_survey :
+    (∀ b : ℕ, 3 ≤ b → b % 2 = 1 →
+      (1 : ℝ) / (b : ℝ) ≤ oddTrapMass b ∧
+      0 ≤ oddRunMass b ∧
+      oddTrapMass b + oddRunMass b ≤ 1 ∧
+      (∀ ε > 0, ∀ᶠ N in Filter.atTop, oddTrapMass b - ε ≤ countFrac (ZSet b) N) ∧
+      (∀ ε > 0, ∀ᶠ N in Filter.atTop, oddRunMass b - ε ≤ countFrac (DivSet b) N) ∧
+      (oddTrapMass b + oddRunMass b = 1 →
+        Filter.Tendsto (countFrac (ZSet b)) Filter.atTop (nhds (oddTrapMass b)) ∧
+        Filter.Tendsto (countFrac (RSet b)) Filter.atTop (nhds (oddTrapMass b)) ∧
+        Filter.Tendsto (countFrac (DivSet b)) Filter.atTop (nhds (oddRunMass b)) ∧
+        (∃ qτ qρ : ℚ, (qτ : ℝ) = oddTrapMass b ∧ (qρ : ℝ) = oddRunMass b ∧ qτ + qρ = 1))) ∧
+    allOddBases1999.card = 999 ∧
+    ∃ (trapOnlyBases splitBases : Finset ℕ),
+      trapOnlyBases ⊆ allOddBases1999 ∧
+      splitBases ⊆ allOddBases1999 ∧
+      Disjoint trapOnlyBases splitBases ∧
+      trapOnlyBases.card = 27 ∧
+      splitBases.card = 878 ∧
+      (trapOnlyBases ∪ splitBases).card = 905 ∧
+      (∀ b ∈ trapOnlyBases,
+        oddTrapMass b = 1 ∧ oddRunMass b = 0 ∧
+        oddTrapMass b + oddRunMass b = 1 ∧
+        Filter.Tendsto (countFrac (ZSet b)) Filter.atTop (nhds (1 : ℝ)) ∧
+        Filter.Tendsto (countFrac (RSet b)) Filter.atTop (nhds (1 : ℝ)) ∧
+        Filter.Tendsto (countFrac (DivSet b)) Filter.atTop (nhds (0 : ℝ))) ∧
+      (∀ b ∈ splitBases,
+        0 < oddTrapMass b ∧ 0 < oddRunMass b ∧
+        oddTrapMass b + oddRunMass b = 1 ∧
+        (∃ qτ qρ : ℚ, (qτ : ℝ) = oddTrapMass b ∧ (qρ : ℝ) = oddRunMass b ∧ qτ + qρ = 1) ∧
+        Filter.Tendsto (countFrac (ZSet b)) Filter.atTop (nhds (oddTrapMass b)) ∧
+        Filter.Tendsto (countFrac (RSet b)) Filter.atTop (nhds (oddTrapMass b)) ∧
+        Filter.Tendsto (countFrac (DivSet b)) Filter.atTop (nhds (oddRunMass b))) := by
+  obtain ⟨huniv, h999, hTsub, hSsub, hdisj, hTcard, hScard, hRcard, hTprop, hSprop⟩ :=
+    Ouroboros.thm_odd_survey
+  refine ⟨fun b hb3 hb_odd => ?_, h999,
+    Ouroboros.trapOnlyBases, Ouroboros.splitBases,
+    hTsub, hSsub, hdisj, hTcard, hScard, hRcard, ?_, ?_⟩
+  · simpa only [oddTrapMass_eq, oddRunMass_eq, countFrac_eq, ZSet_eq, RSet_eq, DivSet_eq] using
+      huniv b hb3 hb_odd
+  · intro b hb
+    simpa only [oddTrapMass_eq, oddRunMass_eq, countFrac_eq, ZSet_eq, RSet_eq, DivSet_eq] using
+      hTprop b hb
+  · intro b hb
+    simpa only [oddTrapMass_eq, oddRunMass_eq, countFrac_eq, ZSet_eq, RSet_eq, DivSet_eq] using
+      hSprop b hb
+
+theorem thm_odd_table_examples :
+    (oddTrapMass 3 = 1 / 3 ∧ oddRunMass 3 = 2 / 3) ∧
+    (oddTrapMass 5 = 1 ∧ oddRunMass 5 = 0) ∧
+    (oddTrapMass 7 = 1 / 7 ∧ oddRunMass 7 = 0) ∧
+    (oddTrapMass 13 = 13210 / 16991 ∧ oddRunMass 13 = 3781 / 16991 ∧
+      Filter.Tendsto (countFrac (ZSet 13)) Filter.atTop (nhds ((13210 : ℝ) / 16991)) ∧
+      Filter.Tendsto (countFrac (RSet 13)) Filter.atTop (nhds ((13210 : ℝ) / 16991)) ∧
+      Filter.Tendsto (countFrac (DivSet 13)) Filter.atTop (nhds ((3781 : ℝ) / 16991))) := by
+  simpa only [oddTrapMass_eq, oddRunMass_eq, countFrac_eq, ZSet_eq, RSet_eq, DivSet_eq] using
+    Ouroboros.thm_odd_table_examples
 
 end OuroborosChallenge

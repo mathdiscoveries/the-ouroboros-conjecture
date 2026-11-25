@@ -16,6 +16,16 @@ public import Ouroboros.BasinOneMoves
 public import Ouroboros.CycleBounds
 public import Ouroboros.CantorClosure
 public import Ouroboros.SuffixDimension
+public import Ouroboros.BasinOneLowerCertData
+public import Ouroboros.BasinOneLowerCert
+public import Ouroboros.BasinOneSharp
 public import Ouroboros.WeightedCharging
 public import Ouroboros.SuffixClass
 public import Ouroboros.EvenStopping
+public import Ouroboros.OddSurveyCertData
+public import Ouroboros.OddSurveyCert
+public import Ouroboros.OddSurvey
+public import Ouroboros.BasinOneUpperCertData
+public import Ouroboros.BasinOneUpperCert
+public import Ouroboros.BasinOneUpperSharp
+public import Ouroboros.BasinSharpAll

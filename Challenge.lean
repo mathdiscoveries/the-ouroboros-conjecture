@@ -10,6 +10,7 @@ public import Mathlib.Topology.Instances.Nat
 public import Mathlib.Data.Nat.Factorization.Basic
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.NumberTheory.Padics.RingHoms
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Mathlib.MeasureTheory.Measure.Hausdorff
 public import Mathlib.Topology.MetricSpace.HausdorffDimension
 
@@ -19,12 +20,13 @@ Defines the base-`b` last-digit Collatz map `f_b`, the base-10 Ouroboros map `f 
 the open conjecture `OuroborosConjecture`, the basin counting functions `N1`, `N1All`, `N5`,
 `N5All`, the Terras exceptional sets `E_k` and `NoDescent`, the even-base Markov drift
 and stopping-density predicates (`HasStationaryDriftIn`, `AllStationaryDriftsSatisfy`,
-`D_k`, `DescentSet`, `p_k`, `p_infty`), the odd-base trapdoor set `ZSet`, the base-10
-odd-cycle structure `OddCycle`, the inverse-tree charging structure (`TypeId`, `movesOf`,
-`childType`, `NTree`), the `2`-adic Cantor closure (`B1Padic`, `KCal`, `HasBoxDim`), and
-the reversed base-`b` suffix closures (`suffixClosure1`, `suffixClosure5`, `boxCoverNumber`),
-together with 35 compared theorems covering all 13 Lean-proved main results of the
-companion paper.
+`D_k`, `DescentSet`, `p_k`, `p_infty`), the odd-base trapdoor, attraction, divergence, and
+Markov absorption predicates (`ZSet`, `RSet`, `DivSet`, `OddCyl`, `cylStep`, `oddTrapMass`,
+`oddRunMass`), the base-10 odd-cycle structure `OddCycle`, the inverse-tree charging
+structure (`TypeId`, `movesOf`, `childType`, `NTree`), the `2`-adic Cantor closure
+(`B1Padic`, `KCal`, `HasBoxDim`), and the reversed base-`b` suffix closures
+(`suffixClosure1`, `suffixClosure5`, `boxCoverNumber`), together with 38 compared theorems
+covering 15 of 16 proved main results of the companion paper.
 -/
 
 @[expose] public section
@@ -541,5 +543,160 @@ theorem cor_suffix_dimension :
        (887529815 / 1000000000 : ℝ) < s10 ∧ s10 < (887529825 / 1000000000 : ℝ)) ∧
       (dimH (suffixClosure1 7) = ENNReal.ofReal 1 ∧
        suffixClosure1 7 = Set.Icc (0 : ℝ) 1) := by sorry
+
+/-! ## Additional Definitions and Headline Theorems for Sharpened Basin Bounds (Theorem 8) and Odd-Base Absorption Survey (Theorem 13) -/
+
+/-- Odd-base attraction set `R(b) = {n ≥ 1 | f_b^k(n) = 1 for some k}`. -/
+def RSet (b : ℕ) : Set ℕ := {n | 1 ≤ n ∧ Reaches (f_b b) n 1}
+/-- Odd-base divergence set `E(b) = {n ≥ 1 | f_b^i(n) → ∞}`. -/
+def DivSet (b : ℕ) : Set ℕ :=
+  {n | 1 ≤ n ∧ Filter.Tendsto (fun i => (f_b b)^[i] n) Filter.atTop Filter.atTop}
+/-- Congruence cylinder `(x mod b, c mod 2^j)` for the odd-base Markov chain. -/
+structure OddCyl where
+  x : ℕ
+  c : ℕ
+  j : ℕ
+/-- Deterministic one-step cylinder transition map for odd base `b ≥ 3`. -/
+noncomputable def cylStep (b : ℕ) (C : OddCyl) : OddCyl :=
+  if C.c % 2 = 0 then
+    ⟨(C.x * ((b + 1) / 2)) % b, (C.c / 2) % 2 ^ (C.j - 1), C.j - 1⟩
+  else
+    let a := padicValNat 2 C.x
+    ⟨(C.x * C.x + 1) % b, (C.x * C.c + 1) % 2 ^ (C.j + a), C.j + a⟩
+/-- Cylinder inclusion predicate `C1 ⊆ C2` modulo `(b, 2^{C2.j})`. -/
+def CylSubset (b : ℕ) (C1 C2 : OddCyl) : Prop :=
+  C1.x % b = C2.x % b ∧ C2.j ≤ C1.j ∧ C1.c % 2 ^ C2.j = C2.c % 2 ^ C2.j
+/-- Deterministic stretch from `⟨x, 1, 1⟩` absorbs into the zero-digit trap (`x_s = 0 mod b`). -/
+def IsTrapStretch (b x : ℕ) : Prop :=
+  ∃ s : ℕ, 1 ≤ s ∧
+    (∀ i < s, 1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).x ∧
+              ((cylStep b)^[i] ⟨x, 1, 1⟩).x < b ∧
+              1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).j) ∧
+    ((cylStep b)^[s] ⟨x, 1, 1⟩).x = 0
+/-- Deterministic stretch from `⟨x, 1, 1⟩` returns to a zero-bit state `⟨y, 0, 0⟩`. -/
+def IsZeroStretch (b x y : ℕ) : Prop :=
+  1 ≤ y ∧ y < b ∧ ∃ s : ℕ, 1 ≤ s ∧
+    (∀ i < s, 1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).x ∧
+              ((cylStep b)^[i] ⟨x, 1, 1⟩).x < b ∧
+              1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).j) ∧
+    (cylStep b)^[s] ⟨x, 1, 1⟩ = ⟨y, 0, 0⟩
+/-- Deterministic stretch from `⟨x, 1, 1⟩` enters a self-returning escape cylinder `C0`. -/
+def IsCertifiedEscape (b x : ℕ) : Prop :=
+  ∃ (s p : ℕ) (C0 : OddCyl),
+    1 ≤ p ∧
+    (∀ i ≤ s, 1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).x ∧
+              ((cylStep b)^[i] ⟨x, 1, 1⟩).x < b ∧
+              1 ≤ ((cylStep b)^[i] ⟨x, 1, 1⟩).j) ∧
+    CylSubset b ((cylStep b)^[s] ⟨x, 1, 1⟩) C0 ∧
+    (∀ i ≤ p, 1 ≤ ((cylStep b)^[i] C0).x ∧
+              ((cylStep b)^[i] C0).x < b ∧
+              1 ≤ ((cylStep b)^[i] C0).j) ∧
+    CylSubset b ((cylStep b)^[p] C0) C0
+/-- Canonical outcome of the deterministic stretch from `⟨x, 1, 1⟩` in the odd-base Markov chain. -/
+inductive OddStretchOutcome where
+  | trap
+  | escape
+  | toState (y : ℕ)
+  | unresolved
+/-- Canonical certificate-free stretch outcome for residue `x` modulo `b`. -/
+noncomputable def oddStretchOutcome (b x : ℕ) : OddStretchOutcome :=
+  open Classical in
+  if IsTrapStretch b x then .trap
+  else if IsCertifiedEscape b x then .escape
+  else if h : ∃ y, IsZeroStretch b x y then .toState (Classical.choose h)
+  else .unresolved
+/-- Finite-depth (`m`-step) Markov absorption probability into trap (`ZSet b`) from state `x`. -/
+noncomputable def oddTrapProb (b : ℕ) : ℕ → ℕ → ℝ
+  | 0, _ => 0
+  | m + 1, x =>
+    (1 / 2 : ℝ) * oddTrapProb b m ((x * ((b + 1) / 2)) % b) +
+    (1 / 2 : ℝ) * OddStretchOutcome.casesOn (oddStretchOutcome b x) 1 0 (fun y => oddTrapProb b m y) 0
+/-- Finite-depth (`m`-step) Markov absorption probability into escape (`DivSet b`) from state `x`. -/
+noncomputable def oddRunProb (b : ℕ) : ℕ → ℕ → ℝ
+  | 0, _ => 0
+  | m + 1, x =>
+    (1 / 2 : ℝ) * oddRunProb b m ((x * ((b + 1) / 2)) % b) +
+    (1 / 2 : ℝ) * OddStretchOutcome.casesOn (oddStretchOutcome b x) 0 1 (fun y => oddRunProb b m y) 0
+/-- Per-state infinite-horizon trap absorption probability `t_b(x) = sup_m oddTrapProb b m x`. -/
+noncomputable def oddTrapStateMass (b x : ℕ) : ℝ := ⨆ m, oddTrapProb b m x
+/-- Per-state infinite-horizon escape absorption probability `r_b(x) = sup_m oddRunProb b m x`. -/
+noncomputable def oddRunStateMass (b x : ℕ) : ℝ := ⨆ m, oddRunProb b m x
+/-- Canonical odd-base trap absorption mass `τ_b = (1 + ∑_{x=1}^{b-1} t_b(x)) / b`. -/
+noncomputable def oddTrapMass (b : ℕ) : ℝ :=
+  (1 + ∑ x ∈ Finset.Ico 1 b, oddTrapStateMass b x) / (b : ℝ)
+/-- Canonical odd-base escape absorption mass `ρ_b = (∑_{x=1}^{b-1} r_b(x)) / b`. -/
+noncomputable def oddRunMass (b : ℕ) : ℝ :=
+  (∑ x ∈ Finset.Ico 1 b, oddRunStateMass b x) / (b : ℝ)
+/-- All 999 odd bases `3 ≤ b ≤ 1,999`. -/
+def allOddBases1999 : Finset ℕ := (Finset.Icc 3 1999).filter (fun b => b % 2 = 1)
+
+/-- Complete sharpened basin bounds for base 10 (Theorem 8): sharpened Archimedean lower and upper
+    bounds on `N_1(⌊X⌋)`, strict separation `0.6245 < β = dimH(closure B_1)`, sharpened
+    weighted-charging lower bound `N_5(X) > 0.02134 * X^{13/20}`, and ratio bound
+    `N_1(X) / N_5(X) = O(X^{-0.0255})`. -/
+theorem thm_basin_sharp :
+    (∀ X : ℝ, 1 ≤ X →
+      (806 / 10000 : ℝ) * (X / 31) ^ ((399 : ℝ) / 800) ≤ (N1 ⌊X⌋₊ : ℝ) ∧
+      (145 / 10000 : ℝ) * X ^ ((399 : ℝ) / 800) ≤ (N1 ⌊X⌋₊ : ℝ)) ∧
+    (∃ C : ℝ, 0 < C ∧ ∀ X : ℝ, 1 ≤ X → (N1 ⌊X⌋₊ : ℝ) ≤ C * X ^ ((6245 : ℝ) / 10000)) ∧
+    (∃ a : ℝ, (0 < a ∧ a < 1 ∧ a + 2 * a ^ 4 = 1) ∧
+      let β := -Real.logb 2 a
+      Filter.limsup (fun X : ℝ => Real.log (N1 ⌊X⌋₊ : ℝ) / Real.log X) Filter.atTop ≤
+        (6245 / 10000 : ℝ) ∧
+      (6245 / 10000 : ℝ) < β ∧
+      (626382135 / 1000000000 : ℝ) < β ∧ β < (626382145 / 1000000000 : ℝ) ∧
+      dimH (closure B1Padic) = ENNReal.ofReal β ∧
+      ENNReal.ofReal (6245 / 10000 : ℝ) < dimH (closure B1Padic)) ∧
+    (∀ X : ℕ, 3 ≤ X →
+      ((98959 : ℝ) / ((2269527 : ℝ) * (3 : ℝ) ^ ((13 : ℝ) / 20))) * (X : ℝ) ^ ((13 : ℝ) / 20) ≤
+        (N5 X : ℝ) ∧
+      (2134 / 100000 : ℝ) * (X : ℝ) ^ ((13 : ℝ) / 20) < (N5 X : ℝ)) ∧
+    (∃ C : ℝ, 0 < C ∧ ∀ X : ℕ, 3 ≤ X →
+      (N1 X : ℝ) / (N5 X : ℝ) ≤ C * (X : ℝ) ^ (-(255 : ℝ) / 10000)) := by sorry
+/-- Universal odd-base Markov absorption theorem for every odd `b ≥ 3` and certified 905/999
+    odd-base survey through `b ≤ 1,999` (27 trap-only + 878 split; Theorem 13). -/
+theorem thm_odd_survey :
+    (∀ b : ℕ, 3 ≤ b → b % 2 = 1 →
+      (1 : ℝ) / (b : ℝ) ≤ oddTrapMass b ∧
+      0 ≤ oddRunMass b ∧
+      oddTrapMass b + oddRunMass b ≤ 1 ∧
+      (∀ ε > 0, ∀ᶠ N in Filter.atTop, oddTrapMass b - ε ≤ countFrac (ZSet b) N) ∧
+      (∀ ε > 0, ∀ᶠ N in Filter.atTop, oddRunMass b - ε ≤ countFrac (DivSet b) N) ∧
+      (oddTrapMass b + oddRunMass b = 1 →
+        Filter.Tendsto (countFrac (ZSet b)) Filter.atTop (nhds (oddTrapMass b)) ∧
+        Filter.Tendsto (countFrac (RSet b)) Filter.atTop (nhds (oddTrapMass b)) ∧
+        Filter.Tendsto (countFrac (DivSet b)) Filter.atTop (nhds (oddRunMass b)) ∧
+        (∃ qτ qρ : ℚ, (qτ : ℝ) = oddTrapMass b ∧ (qρ : ℝ) = oddRunMass b ∧ qτ + qρ = 1))) ∧
+    allOddBases1999.card = 999 ∧
+    ∃ (trapOnlyBases splitBases : Finset ℕ),
+      trapOnlyBases ⊆ allOddBases1999 ∧
+      splitBases ⊆ allOddBases1999 ∧
+      Disjoint trapOnlyBases splitBases ∧
+      trapOnlyBases.card = 27 ∧
+      splitBases.card = 878 ∧
+      (trapOnlyBases ∪ splitBases).card = 905 ∧
+      (∀ b ∈ trapOnlyBases,
+        oddTrapMass b = 1 ∧ oddRunMass b = 0 ∧
+        oddTrapMass b + oddRunMass b = 1 ∧
+        Filter.Tendsto (countFrac (ZSet b)) Filter.atTop (nhds (1 : ℝ)) ∧
+        Filter.Tendsto (countFrac (RSet b)) Filter.atTop (nhds (1 : ℝ)) ∧
+        Filter.Tendsto (countFrac (DivSet b)) Filter.atTop (nhds (0 : ℝ))) ∧
+      (∀ b ∈ splitBases,
+        0 < oddTrapMass b ∧ 0 < oddRunMass b ∧
+        oddTrapMass b + oddRunMass b = 1 ∧
+        (∃ qτ qρ : ℚ, (qτ : ℝ) = oddTrapMass b ∧ (qρ : ℝ) = oddRunMass b ∧ qτ + qρ = 1) ∧
+        Filter.Tendsto (countFrac (ZSet b)) Filter.atTop (nhds (oddTrapMass b)) ∧
+        Filter.Tendsto (countFrac (RSet b)) Filter.atTop (nhds (oddTrapMass b)) ∧
+        Filter.Tendsto (countFrac (DivSet b)) Filter.atTop (nhds (oddRunMass b))) := by sorry
+/-- Exact odd-base table evaluations for `b = 3, 5, 7, 13` (including `τ_13 = 13210/16991`,
+    `ρ_13 = 3781/16991`). -/
+theorem thm_odd_table_examples :
+    (oddTrapMass 3 = 1 / 3 ∧ oddRunMass 3 = 2 / 3) ∧
+    (oddTrapMass 5 = 1 ∧ oddRunMass 5 = 0) ∧
+    (oddTrapMass 7 = 1 / 7 ∧ oddRunMass 7 = 0) ∧
+    (oddTrapMass 13 = 13210 / 16991 ∧ oddRunMass 13 = 3781 / 16991 ∧
+      Filter.Tendsto (countFrac (ZSet 13)) Filter.atTop (nhds ((13210 : ℝ) / 16991)) ∧
+      Filter.Tendsto (countFrac (RSet 13)) Filter.atTop (nhds ((13210 : ℝ) / 16991)) ∧
+      Filter.Tendsto (countFrac (DivSet 13)) Filter.atTop (nhds ((3781 : ℝ) / 16991))) := by sorry
 
 end OuroborosChallenge

@@ -36,7 +36,10 @@
     "OuroborosChallenge.thm_even_stopping",
     "OuroborosChallenge.thm_cantor",
     "OuroborosChallenge.thm_suffix_class",
-    "OuroborosChallenge.cor_suffix_dimension"
+    "OuroborosChallenge.cor_suffix_dimension",
+    "OuroborosChallenge.thm_basin_sharp",
+    "OuroborosChallenge.thm_odd_survey",
+    "OuroborosChallenge.thm_odd_table_examples"
   ],
   "definition_names": [],
   "permitted_axioms": [

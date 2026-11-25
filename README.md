@@ -6,17 +6,16 @@ base-10 **Ouroboros map** $f = f_{10}$ and the open conjecture (`OuroborosConjec
 that every positive integer reaches either $1 \to 2 \to 1$ or
 $5 \to 26 \to 13 \to 40 \to 20 \to 10 \to 5$.
 
-**Verification Scope (Partial Lean 4):** Main results in the companion paper: 13 of 16
-proved main results in Lean 4 (81%) · 3 of 16 by external computation (sharpened $N_1$
-bounds, cycles through $10^{15}$, and 905/999 odd-base absorption survey; the sharpened
-$N_5$ bound of Theorem 8 Part 2 is verified in Lean 4) · Global conjecture open. Across
-this repository, 16 library modules in `Ouroboros/` (plus `Challenge.lean` and
-`Solution.lean`) import Mathlib while the 16 finite certificate shards
-(`Ouroboros/BasinFiveCertData.lean`, `Ouroboros/BasinFiveCert00.lean`–`13.lean`, and
-`Ouroboros/EvenBasesCert.lean`) verify finite integer inequalities by `Init`-only kernel
-reduction (`rfl`). All 35 compared theorems in `Solution.lean` build with zero `sorry`,
-zero `native_decide`, and Lean's standard axioms (`propext`, `Classical.choice`,
-`Quot.sound`) only.
+**Verification Scope (Partial Lean 4):** Main results in the companion paper: 15 of 16
+proved main results in Lean 4 (94%) · 1 of 16 by external computation (exhaustive sweep
+and cycle lower bounds through $10^{15}$) · 0 by written proof · Global conjecture open.
+Across this repository, 19 library modules in `Ouroboros/` (plus `Challenge.lean` and
+`Solution.lean`) import Mathlib directly while the 104 finite certificate shards
+(`BasinFiveCert*`, `EvenBasesCert`, `BasinOneLowerCert*`, `BasinOneUpperCert*`, and
+`OddSurveyCert*`) verify finite integer inequalities by `Init`-only kernel reduction
+(`rfl`). All 38 compared theorems in `Solution.lean` build with zero `sorry`, zero
+`native_decide`, and Lean's standard axioms (`propext`, `Classical.choice`, `Quot.sound`)
+only, and pass Lean 4.35's official `lake comparator` check.
 
 ## Formalized Headline Results (`Challenge.lean` / `Solution.lean`)
 
@@ -38,29 +37,32 @@ zero `native_decide`, and Lean's standard axioms (`propext`, `Classical.choice`,
    `thm_basin1_density_zero`, `thm_cantor`): every odd member reaching $1$ satisfies
    $n \equiv 1, 15, \text{or } 17 \pmod{30}$; the $2$-adic closure $\overline{B_1}$ in
    $\mathbb{Z}_2$ equals $(30\mathcal{K}_1 + 1) \cup (30\mathcal{K}_{15} + 15) \cup (30\mathcal{K}_{17} + 17)$,
-   is nowhere dense, satisfies the infinite-hit / infinite-exit ball dichotomy, is mapped
-   by the halving-itinerary map $\Psi_r$ (`itin`) via a surjective ultrametric isometry
-   onto $\Sigma = \{0, 1000, 1001\}^\omega$ ($r \in \{1, 17\}$) and $000\Sigma \sqcup 001\Sigma$ ($r = 15$), has positive finite $\beta$-dimensional
+   is nowhere dense, satisfies the infinite-hit / infinite-exit ball dichotomy, admits a
+   surjective ultrametric isometry `itin` onto $\Sigma = \{0, 1000, 1001\}^\omega$ ($r \in \{1, 17\}$)
+   and $000\Sigma \sqcup 001\Sigma$ ($r = 15$), has positive finite $\beta$-dimensional
    Hausdorff measure $\frac{1}{2} \le \mathcal{H}^\beta(\overline{B_1}) \le a^{-2} + a < 3.031$,
    exact Hausdorff and box-counting dimension $\dim_H(\overline{B_1}) = \dim_B(\overline{B_1}) = \beta = -\log_2 a \approx 0.62638214$,
    and elementary bounds $a_1^9 X^\gamma \le N_1(\lfloor X \rfloor) \le X^\beta$ for all real $X \ge 1$.
-5. **Weighted tree charging, improved Basin-of-5 lower bound & strict basin separation**
+5. **Sharpened basin bounds, weighted charging & strict 2-adic/Archimedean separation**
    (`lem_weighted_tree3`, `thm_basin5_tight`, `thm_basin5_sharp`, `thm_basin5_sharp_gt`,
-   `cor_basin_separation_unconditional`, `cor_basin_separation_tendsto_zero_unconditional`):
-   individual child-weight charging on the inverse tree of $3$ discharges
-   $N_5(X) \ge \frac{98959}{2269527 \cdot 3^{13/20}} X^{13/20} > 0.02134\,X^{0.65}$
-   unconditionally for all $X \ge 3$ via the $Q = 14{,}175$ `QuadTree` kernel certificate,
-   together with $N_1(X)/N_5(X) \le (2.44 / 1.0766 \times 10^{-4})\,X^{-0.0236} \to 0$.
+   `cor_basin_separation_unconditional`, `cor_basin_separation_tendsto_zero_unconditional`,
+   `thm_basin_sharp`): pure-kernel certificates discharge $N_1(X) \ge 0.0145\,X^{399/800}$,
+   $N_1(X) \le C\,X^{0.6245}$ with strict separation $\limsup (\log N_1(X)/\log X) \le 0.6245 < \beta = \dim_H(\overline{B_1})$,
+   $N_5(X) \ge \frac{98959}{2269527 \cdot 3^{13/20}} X^{13/20} > 0.02134\,X^{0.65}$, and
+   $N_1(X)/N_5(X) \le C\,X^{-0.0255} \to 0$.
 6. **All even bases drift classification** (`thm_even_bases`, `prop_near_zero_band`,
    `cor_drift_growth`): an even base $b \ge 2$ admits nonpositive stationary drift if and
    only if $b \in \{2, 4, 6, 10\}$; stationary drift lies in $[-1/4, 1/4]$ iff
    $b \in \{4, 8, 10, 14\}$ and in $[-1/4, 0)$ iff $b \in \{4, 10\}$; universal
    logarithmic drift growth holds for all even $b \ge 2$.
-7. **Odd-base trapdoor & certified divergence** (`prop_odd_runaway`,
-   `thm_odd_trapdoor_rootless`, `lem_base17_runaway`, `thm_odd_densities_rootless`):
-   even-digit runaway divergence, rootless odd-base trapdoor density $1/b$ when $p \mid b$
-   with $p \equiv 3 \pmod 4$, and certified divergence in base $17$ for odd
-   $n \equiv 16 \pmod{17}$.
+7. **Odd-base trapdoor, universal Markov absorption & certified 905/999 odd-base survey**
+   (`prop_odd_runaway`, `thm_odd_trapdoor_rootless`, `lem_base17_runaway`,
+   `thm_odd_densities_rootless`, `thm_odd_survey`, `thm_odd_table_examples`):
+   even-digit runaway divergence, rootless odd-base trapdoor density $1/b$, certified
+   base-17 divergence, universal lower-density bounds $\tau_b + \rho_b \le 1$ for every
+   odd $b \ge 3$ with exact rational densities whenever $\tau_b + \rho_b = 1$, pure-kernel
+   certification of 905 of the 999 odd bases $3 \le b \le 1{,}999$ (27 trap-only + 878 split),
+   and exact table values for $b \in \{3, 5, 7, 13\}$ ($\tau_{13} = 13210/16991$, $\rho_{13} = 3781/16991$).
 8. **Base-10 cycle algebra & classification for $\le 3$ odd members**
    (`cycle_n5_eq_n3_add_n7`, `lem_halving_budget`, `thm_cycle_tail_64000`,
    `cycle_m1_unique`, `cycle_m2_classification`, `cycle_m3_unique`, `f_cycle_one`,
@@ -77,20 +79,20 @@ zero `native_decide`, and Lean's standard axioms (`propext`, `Classical.choice`,
    in base $10$, and $1$ with $\mathcal{E}_7 = [0, 1]$ in base $7$), while the analogous
    closure $\mathcal{E}_{5,b}$ for $\mathcal{B}_5$ equals $[0, 1]$ in every base $b \ge 2$.
 
-Companion working paper, external verification archives (sharpened $N_1$ bounds, exhaustive
-sweep and cycle enumeration through $10^{15}$, and the $905/999$ odd-base absorption
-survey), and prior-work search logs live at
-https://mathdiscoveries.org/results/the-ouroboros-conjecture.
+Companion working paper, external verification archive (exhaustive sweep and cycle lower
+bounds through $10^{15}$), and prior-work search logs live at
+https://mathdiscoveries.org/results/the-ouroboros-conjecture.html.
 
 ## Build & Verify
 
 ```bash
 lake build Challenge Solution Ouroboros
+lake comparator --inadvisably-no-sandbox
 lake env lean Ouroboros/Verify.lean
 ```
 
 ## Disclosure & License
 
 Generated and checked by AI research agents built and directed by **Tyler B. Hughes**.
-Cross-family (`anthropic` Claude Opus) blind statement-fidelity review verified the five
+Cross-family (`anthropic` Claude Opus) blind statement-fidelity review verified all newly
 added modules. No human mathematician has yet refereed the proof. Licensed under Apache-2.0.
