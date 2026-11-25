@@ -42,7 +42,7 @@ public import Solution
 #print axioms OuroborosChallenge.thm_odd_survey
 #print axioms OuroborosChallenge.thm_odd_table_examples
 
--- Full Ouroboros library audit (1833 declarations)
+-- Full Ouroboros library audit (1813 declarations)
 #print axioms Ouroboros.f_cycle_one
 #print axioms Ouroboros.f_cycle_five
 #print axioms Ouroboros.f_ex_31_reaches_1
@@ -57,14 +57,6 @@ public import Solution
 #print axioms Ouroboros.prop_base2_reaches_one
 #print axioms Ouroboros.prop_base5_reaches_one
 #print axioms Ouroboros.prop_mult4_single_halving
-#print axioms Ouroboros.prop_mult4_subchain_transitions
-#print axioms Ouroboros.prop_mult4_stationary
-#print axioms Ouroboros.prop_mult4_drift_formula
-#print axioms Ouroboros.prop_mult4_drift_neg_iff
-#print axioms Ouroboros.prop_mult4_drift_pos_of_ge_two
-#print axioms Ouroboros.prop_base6_chain
-#print axioms Ouroboros.prop_base10_chain
-#print axioms Ouroboros.prop_base14_chain
 #print axioms Ouroboros.prop_odd_runaway
 #print axioms Ouroboros.prop_base3_runaway
 #print axioms Ouroboros.lemma_after_3_or_7_is_5
@@ -86,13 +78,9 @@ public import Solution
 #print axioms Ouroboros.thm_basin1_density_zero
 #print axioms Ouroboros.lemma_odd_predecessors
 #print axioms Ouroboros.lemma_odd_predecessors_unique
-#print axioms Ouroboros.lemma_tree_weights
-#print axioms Ouroboros.prop_basin5_elementary
 #print axioms Ouroboros.nonperiodic_three
-#print axioms Ouroboros.thm_basin5_from_certificate
 #print axioms Ouroboros.cor_basin_separation
 #print axioms Ouroboros.cor_basin_separation_all
-#print axioms Ouroboros.cor_basin_separation_tendsto_zero
 #print axioms Ouroboros.lemma_tree_weights_trunc
 #print axioms Ouroboros.thm_basin5_tight
 #print axioms Ouroboros.thm_basin5
@@ -187,7 +175,6 @@ public import Solution
 #print axioms Ouroboros.T_C_pos
 #print axioms Ouroboros.T_C_iter_pos
 #print axioms Ouroboros.base5_mult5_reaches_one
-#print axioms Ouroboros.base14_digit7_transient
 #print axioms Ouroboros.digitVal_odd
 #print axioms Ouroboros.digitVal_pos
 #print axioms Ouroboros.digitVal_dvd_1575
@@ -198,16 +185,9 @@ public import Solution
 #print axioms Ouroboros.not_reaches_pred_of_nonperiodic
 #print axioms Ouroboros.pred_subtrees_disjoint
 #print axioms Ouroboros.NTree_ge_one_add_sum
-#print axioms Ouroboros.two_pow_period_mod
 #print axioms Ouroboros.div_mod_div_eq
-#print axioms Ouroboros.two_pow_mod_10_of_mod4_1
-#print axioms Ouroboros.f_iter_11_reaches_5
-#print axioms Ouroboros.chainVal11_props
-#print axioms Ouroboros.chainVal11_inj
 #print axioms Ouroboros.cycle5_mem
-#print axioms Ouroboros.two_pow_540_mod_14175
 #print axioms Ouroboros.h1575_dvd_14175
-#print axioms Ouroboros.basin5_const_ge
 #print axioms Ouroboros.BasinFiveCert.checkR_all
 #print axioms Ouroboros.BasinFiveCert.checkR_type_le
 #print axioms Ouroboros.BasinFiveCert.checkCoeff_sound
