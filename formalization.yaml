@@ -7,17 +7,37 @@ project:
     Lean 4 (v4.35.0) + Mathlib formalization of the base-b last-digit Collatz
     family f_b(n) = n/2 (even n) and (n mod b)*n + 1 (odd n), focusing on the
     base-10 Ouroboros map f = f_10 and stating the open OuroborosConjecture
-    definition alongside 38 unconditionally proved compared theorems (zero sorry,
-    zero native_decide, standard axioms only). Main results in the companion
-    paper: 15 of 16 proved main results in Lean 4 (94%) · 1 of 16 by external
-    computation (exhaustive sweep and cycle lower bounds through 10^15) · 0 by
-    written proof · Global conjecture open. Within this package, 19 library
-    modules in Ouroboros/ (plus Challenge.lean and Solution.lean) import
-    Mathlib directly while the 104 finite certificate shards
-    (BasinFiveCert*, EvenBasesCert, BasinOneLowerCert*, BasinOneUpperCert*,
-    and OddSurveyCert*) verify finite integer inequalities by Init-only kernel
-    reduction (rfl). Companion working paper, exact external checkers, and
-    logged prior-work searches are published at
+    definition alongside 38 unconditionally proved compared theorems (zero
+    sorry, zero native_decide, standard axioms only). Collectively, the 38
+    theorems establish six principal result families: (1) small-base
+    resolutions, including base-4 equivalence to the classical 3x+1 Collatz
+    conjecture and global convergence to 1 in bases 2 and 5; (2) base-10
+    exponential Terras stopping-time descent (p_k <= 1.124953 * 0.996423^k)
+    and density-one descent, together with a complete all-even-base
+    stopping-time dichotomy (p_infty(b) = 0 iff b in {2, 4, 6, 10}) and
+    even-base drift classification; (3) the base-10 basin-of-1 modulo-30
+    residue law, exact 2-adic Cantor closure and ultrametric isometry, and
+    exact Hausdorff and box-counting dimension dim_H = dim_B = beta = -log_2 a
+    (plus congruence-class completions and exact base-b suffix-closure
+    dimension in every base b >= 2); (4) sharp pure-kernel basin growth bounds
+    (0.0145 X^(399/800) <= N_1(X) <= C X^0.6245 with limsup (log N_1 / log X)
+    <= 0.6245 < beta, N_5(X) > 0.02134 X^(13/20), and strict separation
+    N_1(X)/N_5(X) <= C X^(-0.0255) -> 0); (5) universal odd-base Markov
+    absorption for all odd b >= 3 and a certified 905/999 odd-base survey
+    through b <= 1999 (27 trap-only and 878 split rational densities, plus
+    explicit b = 3, 5, 7, 13 evaluations); and (6) base-10 cycle obstructions
+    (digit-cancellation, halving-budget, K > 64000 tail, and unconditional
+    classification of all cycles with m <= 3 odd members alongside the two
+    known cycles through 1 and 5). Main results in the companion paper: 15 of
+    16 proved main results in Lean 4 (94%) · 1 of 16 by external computation
+    (exhaustive sweep and cycle lower bounds through 10^15) · 0 by written
+    proof · Global conjecture open. Within this package, 19 library modules in
+    Ouroboros/ (plus Challenge.lean and Solution.lean) import Mathlib directly
+    while the 104 finite certificate shards (BasinFiveCert*, EvenBasesCert,
+    BasinOneLowerCert*, BasinOneUpperCert*, and OddSurveyCert*) verify finite
+    integer inequalities by Init-only kernel reduction (rfl). Companion
+    working paper, exact external checkers, and logged prior-work searches are
+    published at
     https://mathdiscoveries.org/results/the-ouroboros-conjecture.html.
   authors:
     - "Tyler B. Hughes"
