@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+type: software
+message: "If you use or cite this Lean 4 formalization, please cite it using the metadata below."
+title: "The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps Across Many Bases"
+authors:
+  - family-names: "Hughes"
+    given-names: "Tyler B."
+    orcid: "https://orcid.org/0000-0001-6221-9014"
+version: "v2.0.0"
+date-released: "2026-11-24"
+license: "Apache-2.0"
+repository-code: "https://github.com/mathdiscoveries/the-ouroboros-conjecture"
+url: "https://mathdiscoveries.org/results/last-digit-collatz"

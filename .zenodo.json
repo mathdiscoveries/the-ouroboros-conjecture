@@ -1,0 +1,67 @@
+{
+  "creators": [
+    {
+      "name": "Hughes, Tyler B.",
+      "orcid": "0000-0001-6221-9014"
+    }
+  ],
+  "title": "The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps Across Many Bases",
+  "description": "Lean 4 (v4.35.0) + Mathlib formalization of the base-b last-digit Collatz family f_b(n) = n/2 (even n), (n mod b)*n + 1 (odd n), covering 35 compared theorems across base-4 Collatz equivalence, exponential density-one Terras descent in base 10, complete all-even-base stopping-time dichotomy (p_infty(b) = 0 iff b in {2, 4, 6, 10}), exact 2-adic Cantor closure and Hausdorff/box-counting dimension beta = -log_2 a of the basin of 1 with elementary quartic bounds a_1^9 X^gamma <= N_1(floor X) <= X^beta, individual child-weight charging and improved unconditional basin-of-5 lower bound N_5(X) > 0.02134 * X^(13/20) with strict asymptotic separation N_1(X)/N_5(X) -> 0, complete even-base drift classification, odd-base trapdoor and certified divergence theorems, base-10 cycle algebra and m <= 3 classification, and exact congruence-class completions and base-b suffix-closure Hausdorff and box-counting dimension (log u + t log lambda)/log b in every base b >= 2, alongside the formal definition OuroborosConjecture (open). Standard axioms only, zero sorry, zero native_decide. Main results in the companion paper: 13 of 16 proved main results in Lean 4 (81%) · 3 of 16 by external computation (sharpened N_1 bounds, cycles through 10^15, and 905/999 odd-base absorption survey; the sharpened N_5 bound of Theorem 8 Part 2 is verified in Lean 4) · Global conjecture open. Generated and checked by AI research agents built and directed by Tyler B. Hughes. No human mathematician has yet refereed the proof.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "apache-2.0",
+  "language": "eng",
+  "keywords": [
+    "Lean 4",
+    "Mathlib",
+    "formalized mathematics",
+    "theorem proving",
+    "Collatz conjecture",
+    "generalized Collatz maps",
+    "Ouroboros conjecture",
+    "2-adic Cantor set",
+    "Hausdorff dimension",
+    "number theory",
+    "math.NT",
+    "MSC 2020: 11B83",
+    "MSC 2020: 37P99"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://mathdiscoveries.org/results/last-digit-collatz",
+      "relation": "isSupplementTo",
+      "resource_type": "other"
+    },
+    {
+      "identifier": "https://doi.org/10.4064/aa-30-3-241-252",
+      "relation": "references",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "https://doi.org/10.4064/aa-43-2-167-175",
+      "relation": "references",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "https://doi.org/10.4064/aa-46-2-125-143",
+      "relation": "references",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "https://doi.org/10.4064/aa109-3-4",
+      "relation": "references",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "https://doi.org/10.4064/aa131-3-2",
+      "relation": "references",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "https://doi.org/10.1007/s10817-022-09658-8",
+      "relation": "references",
+      "resource_type": "publication-article"
+    }
+  ],
+  "notes": "Unrefereed. Generated and checked by AI research agents built and directed by Tyler B. Hughes."
+}

@@ -1,0 +1,39 @@
+module
+
+public import Solution
+
+#print axioms OuroborosChallenge.prop_base4_reaches_three_iff
+#print axioms OuroborosChallenge.prop_base4_iff_collatz
+#print axioms OuroborosChallenge.prop_base2_reaches_one
+#print axioms OuroborosChallenge.prop_base5_reaches_one
+#print axioms OuroborosChallenge.thm_terras_bound
+#print axioms OuroborosChallenge.thm_terras_density_one
+#print axioms OuroborosChallenge.thm_residue_law
+#print axioms OuroborosChallenge.thm_basin1_lower
+#print axioms OuroborosChallenge.thm_basin1_upper_explicit
+#print axioms OuroborosChallenge.thm_basin1_density_zero
+#print axioms OuroborosChallenge.thm_basin5_tight
+#print axioms OuroborosChallenge.cor_basin_separation_unconditional
+#print axioms OuroborosChallenge.cor_basin_separation_tendsto_zero_unconditional
+#print axioms OuroborosChallenge.thm_even_bases
+#print axioms OuroborosChallenge.prop_near_zero_band
+#print axioms OuroborosChallenge.cor_drift_growth
+#print axioms OuroborosChallenge.prop_odd_runaway
+#print axioms OuroborosChallenge.thm_odd_trapdoor_rootless
+#print axioms OuroborosChallenge.lem_base17_runaway
+#print axioms OuroborosChallenge.thm_odd_densities_rootless
+#print axioms OuroborosChallenge.cycle_n5_eq_n3_add_n7
+#print axioms OuroborosChallenge.lem_halving_budget
+#print axioms OuroborosChallenge.thm_cycle_tail_64000
+#print axioms OuroborosChallenge.cycle_m1_unique
+#print axioms OuroborosChallenge.cycle_m2_classification
+#print axioms OuroborosChallenge.cycle_m3_unique
+#print axioms OuroborosChallenge.f_cycle_one
+#print axioms OuroborosChallenge.f_cycle_five
+#print axioms OuroborosChallenge.lem_weighted_tree3
+#print axioms OuroborosChallenge.thm_basin5_sharp
+#print axioms OuroborosChallenge.thm_basin5_sharp_gt
+#print axioms OuroborosChallenge.thm_even_stopping
+#print axioms OuroborosChallenge.thm_cantor
+#print axioms OuroborosChallenge.thm_suffix_class
+#print axioms OuroborosChallenge.cor_suffix_dimension

@@ -1,0 +1,381 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps Across Many Bases"
+  description: >-
+    Lean 4 (v4.35.0) + Mathlib formalization of the base-b last-digit Collatz
+    family f_b(n) = n/2 (even n) and (n mod b)*n + 1 (odd n), focusing on the
+    base-10 Ouroboros map f = f_10 and stating the open OuroborosConjecture
+    definition alongside 35 unconditionally proved compared theorems (zero sorry,
+    zero native_decide, standard axioms only). Main results in the companion
+    paper: 13 of 16 proved main results in Lean 4 (81%) · 3 of 16 by external
+    computation (sharpened N_1 bounds, cycles through 10^15, and 905/999
+    odd-base absorption survey; the sharpened N_5 bound of Theorem 8 Part 2 is
+    verified in Lean 4) · Global conjecture open. Within this package, 16
+    library modules in Ouroboros/ (plus Challenge.lean and Solution.lean)
+    import Mathlib while the 16 finite certificate shards (BasinFiveCertData,
+    BasinFiveCert00..13, and EvenBasesCert) verify finite integer inequalities
+    by Init-only kernel reduction (rfl). Companion working paper, exact
+    external checkers, and logged prior-work searches are published at
+    https://mathdiscoveries.org/results/last-digit-collatz.
+  authors:
+    - "Tyler B. Hughes"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Tyler B. Hughes"
+
+classification:
+  arxiv: ["math.NT", "math.DS"]
+  msc2020: ["11B83", "37P99", "60J10"]
+
+sources:
+  - title: "The Ouroboros Conjecture: Competing Attractors in Base 10 Among Last-Digit Collatz Maps Across Many Bases"
+    authors:
+      - "Tyler B. Hughes"
+    id: "https://mathdiscoveries.org/results/last-digit-collatz"
+    type: original-proof
+    location: "Companion page, working paper, verification archives, and prior-work search log at https://mathdiscoveries.org/results/last-digit-collatz"
+    relationship: other
+    author_endorsement: participated
+    note: >-
+      Discovery of the base-10 Ouroboros map, all proofs, Lean 4 + Mathlib
+      formalization, and internal adversarial reviews were produced by AI
+      research agents built and directed by Tyler B. Hughes. Logged prior-work
+      searches through 2026-11-22 did not find the last-digit rule or the
+      base-10 two-loop conjecture; Guy's Unsolved Problems in Number Theory
+      (print) and Wirsching's monograph remain to be searched. No human
+      mathematician has yet refereed the proof.
+  - title: "A stopping time problem on the positive integers"
+    authors:
+      - "Riho Terras"
+    id: "https://doi.org/10.4064/aa-30-3-241-252"
+    type: paper
+    location: "Acta Arithmetica 30(3) (1976), 241-252"
+    relationship: background
+    note: >-
+      Read in full (pp. 241-252). Parity-word coding and density-one stopping
+      time method for the classical 3x+1 map; precedent for our base-10 coding
+      and exponential descent bound.
+  - title: "A generalization of Hasse's generalization of the Syracuse algorithm"
+    authors:
+      - "K. R. Matthews"
+      - "A. M. Watts"
+    id: "https://doi.org/10.4064/aa-43-2-167-175"
+    type: paper
+    location: "Acta Arithmetica 43(2) (1984), 167-175"
+    relationship: background
+    note: >-
+      Read in full (pp. 167-175). Congruence-cylinder coding for generalized
+      Syracuse mappings under coprime-multiplier hypotheses.
+  - title: "A Markov process underlying the generalized Syracuse algorithm"
+    authors:
+      - "G. M. Leigh"
+    id: "https://doi.org/10.4064/aa-46-2-125-143"
+    type: paper
+    location: "Acta Arithmetica 46(2) (1986), 125-143"
+    relationship: background
+    note: >-
+      Read in full (pp. 125-143). Residue-tracking Markov chains when
+      multipliers share factors with the modulus.
+  - title: "Bounds for the 3x+1 problem using difference inequalities"
+    authors:
+      - "Ilia Krasikov"
+      - "Jeffrey C. Lagarias"
+    id: "https://doi.org/10.4064/aa109-3-4"
+    type: paper
+    location: "Acta Arithmetica 109(3) (2003), 237-258"
+    relationship: background
+    note: >-
+      Read in full (pp. 237-258). Inverse-orbit difference inequalities for
+      3x+1 motivating our weighted backward-tree bounds for the basin of 5.
+  - title: "On the (non-)existence of m-cycles for generalized Syracuse sequences"
+    authors:
+      - "John L. Simons"
+    id: "https://doi.org/10.4064/aa131-3-2"
+    type: paper
+    location: "Acta Arithmetica 131(3) (2008), 217-254"
+    relationship: background
+    note: >-
+      Read in full (pp. 217-254). Logarithmic linear-form obstructions to
+      nontrivial cycles of generalized Syracuse maps.
+  - title: "An automated approach to the Collatz conjecture"
+    authors:
+      - "Emre Yolcu"
+      - "Scott Aaronson"
+      - "Marijn J. H. Heule"
+    id: "https://doi.org/10.1007/s10817-022-09658-8"
+    type: paper
+    location: "Journal of Automated Reasoning 67 (2023), article 15"
+    relationship: background
+    note: >-
+      Section 4.2 read. Uses the affine change of variables n = 2y + 1 to
+      conjugate Farkas's variant to a modified shortcut; parallels our direct
+      base-4 conjugacy proof.
+  - title: "A Collatz-type dynamical system with alternating multipliers (3 and 5): three attractors and huge excursions"
+    authors:
+      - "Augusto Santi"
+    id: "https://math.stackexchange.com/q/5113307"
+    type: other
+    location: "Mathematics Stack Exchange, 10 December 2025"
+    relationship: background
+    note: >-
+      Original post read. Records the six-cycle 5 -> 26 -> 13 -> 40 -> 20 ->
+      10 -> 5 under a different rule alternating multipliers 3 and 5 without
+      reading a decimal digit.
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Unconditionally proved in Lean 4 (v4.35.0) + Mathlib with standard axioms
+    only (zero sorry, zero native_decide; 16 library modules in Ouroboros/ plus
+    Challenge and Solution import Mathlib while the 16 finite certificate
+    shards use Init-only kernel reduction): 35 compared theorems covering
+    base-4 Collatz equivalence and bases 2 and 5, base-10 exponential Terras
+    descent (p_k <= 1.124953 * 0.996423^k) and density-one descent, complete
+    all-even-base stopping-time dichotomy (p_infty(b) = 0 iff b in {2, 4, 6, 10}),
+    base-10 basin-of-1 modulo-30 residue law, exact 2-adic Cantor closure and
+    ultrametric isometry onto Sigma and 000 Sigma u 001 Sigma, positive finite
+    Hausdorff measure and exact dim_H = dim_B = beta = -log_2 a, elementary
+    quartic bounds a_1^9 X^gamma <= N_1(floor X) <= X^beta, and density zero,
+    individual child-weight tree charging and unconditional basin-of-5 lower
+    bound N_5(X) > 0.02134 * X^(13/20) (Q = 14175 QuadTree kernel certificate)
+    with strict asymptotic separation N_1(X)/N_5(X) -> 0, complete even-base
+    drift sign classification, near-zero band classification, and logarithmic
+    drift growth, odd-base runaway divergence, rootless trapdoor density 1/b,
+    and base-17 certified divergence, base-10 cycle digit-cancellation,
+    halving-budget, K > 64000 tail, and unconditional m <= 3 odd-cycle
+    classification, and complete congruence-class completions and exact base-b
+    suffix-closure Hausdorff and box-counting dimension (log u + t log lambda)/log b
+    in every base b >= 2. Main results in the companion paper: 13 of 16 proved
+    main results in Lean 4 (81%) · 3 of 16 by external computation (sharpened
+    N_1 bounds, cycles through 10^15, and 905/999 odd-base absorption survey;
+    the sharpened N_5 bound of Theorem 8 Part 2 is verified in Lean 4) · Global
+    conjecture open.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Quot.sound", "Classical.choice"]
+
+automation:
+  methods:
+    - method: agent
+      models: []
+      framework: "AI research agent pipeline built and directed by Tyler B. Hughes"
+      tool_setup: >-
+        Autonomous builder, adversarial falsifier, and cross-model reviewer
+        agents formulated the theorems, generated the finite Q = 14175 QuadTree
+        and even-base certificates, wrote the Lean 4 + Mathlib formalization,
+        and verified every declaration in the kernel.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "local machine"
+      prompting_notes: "Goal-directed mathematical discovery and Lean 4 formalization."
+  spend_usd: "not tracked"
+  notes: >-
+    All proof discovery, Lean 4 formalization, certificates, and internal
+    adversarial reviews were produced by AI research agents built and directed
+    by Tyler B. Hughes. No human mathematician has yet refereed the proof.
+
+fidelity:
+  divergences: >-
+    The global OuroborosConjecture (defined formally in Challenge.lean) is open
+    and not proved. Main results in the companion paper: 13 of 16 proved main
+    results in Lean 4 (81%) · 3 of 16 by external computation (sharpened N_1
+    bounds, cycles through 10^15, and 905/999 odd-base absorption survey; the
+    sharpened N_5 bound of Theorem 8 Part 2 is verified in Lean 4) · Global
+    conjecture open.
+
+review:
+  status: agent-reviewed
+  reviewers:
+    - "Internal adversarial falsifier and cross-family blind referee agents"
+  notes: >-
+    Checked by separate internal falsifier and cross-family (anthropic Claude
+    Opus) blind statement-fidelity referee agents, which graded all five added
+    modules PASS (exact), and audited for standard axioms only via
+    Ouroboros/Verify.lean. Independent mechanical Lean checking and automated
+    editorial checks are recorded in Palomar's report. No human mathematician
+    has yet refereed the proof.
+
+alignment:
+  namespace: "OuroborosChallenge"
+  statements:
+    - source: "Base-4 conjugacy: 2y+1 reaches 3 under f_4 iff y reaches 1 under T_C"
+      lean: "OuroborosChallenge.prop_base4_reaches_three_iff"
+      module: "Challenge"
+      status: proved
+      note: "Exact equivalence for every natural number y."
+    - source: "Base-4 universal attraction to {1, 3} is equivalent to the Collatz conjecture"
+      lean: "OuroborosChallenge.prop_base4_iff_collatz"
+      module: "Challenge"
+      status: proved
+      note: "Unconditional equivalence with universal T_C attraction on positive integers."
+    - source: "Base 2 universal attraction to 1"
+      lean: "OuroborosChallenge.prop_base2_reaches_one"
+      module: "Challenge"
+      status: proved
+      note: "Every positive integer reaches 1 under f_2."
+    - source: "Base 5 universal attraction to 1"
+      lean: "OuroborosChallenge.prop_base5_reaches_one"
+      module: "Challenge"
+      status: proved
+      note: "Every positive integer reaches 1 under f_5."
+    - source: "Quantitative exponential Terras descent in base 10"
+      lean: "OuroborosChallenge.thm_terras_bound"
+      module: "Challenge"
+      status: proved
+      note: "Upper density of E_k is at most 1.124953 * (0.996423)^k."
+    - source: "Natural density-one descent in base 10"
+      lean: "OuroborosChallenge.thm_terras_density_one"
+      module: "Challenge"
+      status: proved
+      note: "The non-descending set NoDescent has natural density 0."
+    - source: "Modulo-30 residue law for the base-10 basin of 1"
+      lean: "OuroborosChallenge.thm_residue_law"
+      module: "Challenge"
+      status: proved
+      note: "Every odd n reaching 1 satisfies n mod 30 in {1, 15, 17}."
+    - source: "Basin-of-1 lower power-law bound"
+      lean: "OuroborosChallenge.thm_basin1_lower"
+      module: "Challenge"
+      status: proved
+      note: "N1(X) >= c * X^(log_2(1/a1)) where a1 + a1^4 = 1, 0 < a1 < 1."
+    - source: "Explicit basin-of-1 upper power-law bound"
+      lean: "OuroborosChallenge.thm_basin1_upper_explicit"
+      module: "Challenge"
+      status: proved
+      note: "N1(X) <= 2.44 * X^0.626383 for every X >= 1."
+    - source: "Basin of 1 has natural density zero"
+      lean: "OuroborosChallenge.thm_basin1_density_zero"
+      module: "Challenge"
+      status: proved
+      note: "N1All(X) / X -> 0 as X -> infinity."
+    - source: "Unconditional basin-of-5 lower bound (Q = 14175 kernel certificate)"
+      lean: "OuroborosChallenge.thm_basin5_tight"
+      module: "Challenge"
+      status: proved
+      note: "N5(X) >= 0.000605 * X^0.65 for every X >= 3 via Init-only QuadTree shards."
+    - source: "Unconditional explicit basin separation bound"
+      lean: "OuroborosChallenge.cor_basin_separation_unconditional"
+      module: "Challenge"
+      status: proved
+      note: "N1(X) / N5(X) <= (2.44 / 1.0766e-4) * X^(-0.0236) for every X >= 3."
+    - source: "Strict asymptotic basin separation N1(X)/N5(X) -> 0"
+      lean: "OuroborosChallenge.cor_basin_separation_tendsto_zero_unconditional"
+      module: "Challenge"
+      status: proved
+      note: "Both odd and all-integer basin ratios tend to 0 unconditionally."
+    - source: "Complete even-base stationary drift sign classification"
+      lean: "OuroborosChallenge.thm_even_bases"
+      module: "Challenge"
+      status: proved
+      note: "Nonpositive stationary drift exists iff b in {2, 4, 6, 10}."
+    - source: "Near-zero drift band classification across all even bases"
+      lean: "OuroborosChallenge.prop_near_zero_band"
+      module: "Challenge"
+      status: proved
+      note: "|drift| <= 1/4 iff b in {4, 8, 10, 14}; drift in [-1/4, 0) iff b in {4, 10}."
+    - source: "Universal logarithmic drift growth across even bases"
+      lean: "OuroborosChallenge.cor_drift_growth"
+      module: "Challenge"
+      status: proved
+      note: "Every stationary drift in even base b >= 2 is >= (1/2) ln(b+2) - (7/2) ln 2."
+    - source: "Odd-base even-digit runaway divergence theorem"
+      lean: "OuroborosChallenge.prop_odd_runaway"
+      module: "Challenge"
+      status: proved
+      note: "Closed nonzero even-digit residue set S yields exponential divergence >= 2^k * n."
+    - source: "Rootless odd-base trapdoor characterization"
+      lean: "OuroborosChallenge.thm_odd_trapdoor_rootless"
+      module: "Challenge"
+      status: proved
+      note: "If prime p = 3 (mod 4) divides odd b, ZSet b consists precisely of positive multiples of b."
+    - source: "Certified base-17 runaway divergence"
+      lean: "OuroborosChallenge.lem_base17_runaway"
+      module: "Challenge"
+      status: proved
+      note: "Every odd n = 16 (mod 17) diverges to infinity with strict 10-step growth."
+    - source: "Exact trapdoor density 1/b for rootless odd bases"
+      lean: "OuroborosChallenge.thm_odd_densities_rootless"
+      module: "Challenge"
+      status: proved
+      note: "countFrac (ZSet b) N -> 1/b when prime p = 3 (mod 4) divides odd b >= 3."
+    - source: "Exact digit-count cancellation law n_5 = n_3 + n_7"
+      lean: "OuroborosChallenge.cycle_n5_eq_n3_add_n7"
+      module: "Challenge"
+      status: proved
+      note: "Holds for every base-10 odd cycle of any length m >= 1."
+    - source: "Halving-budget lower bounds for base-10 odd cycles"
+      lean: "OuroborosChallenge.lem_halving_budget"
+      module: "Challenge"
+      status: proved
+      note: "Both linear and prime-factor halving lower bounds for every OddCycle m."
+    - source: "High-halving cycle tail bound at threshold 10^15"
+      lean: "OuroborosChallenge.thm_cycle_tail_64000"
+      module: "Challenge"
+      status: proved
+      note: "Minimum >= 10^15 and K > 64000 force m >= 20190 and K + m >= 84191."
+    - source: "Unconditional uniqueness of 1-odd-member base-10 cycles"
+      lean: "OuroborosChallenge.cycle_m1_unique"
+      module: "Challenge"
+      status: proved
+      note: "Only the 1 -> 2 -> 1 cycle has m = 1 odd member."
+    - source: "Unconditional classification of 2-odd-member base-10 cycles"
+      lean: "OuroborosChallenge.cycle_m2_classification"
+      module: "Challenge"
+      status: proved
+      note: "Only repeated {1} and {5, 13} have m = 2 odd members."
+    - source: "Unconditional uniqueness of 3-odd-member base-10 cycles"
+      lean: "OuroborosChallenge.cycle_m3_unique"
+      module: "Challenge"
+      status: proved
+      note: "No further cycle has m = 3 odd members."
+    - source: "Non-vacuity check: 1 -> 2 -> 1 cycle"
+      lean: "OuroborosChallenge.f_cycle_one"
+      module: "Challenge"
+      status: proved
+      note: "Confirms f^[2] 1 = 1."
+    - source: "Non-vacuity check: 5 -> 26 -> 13 -> 40 -> 20 -> 10 -> 5 cycle"
+      lean: "OuroborosChallenge.f_cycle_five"
+      module: "Challenge"
+      status: proved
+      note: "Confirms f^[6] 5 = 5."
+    - source: "Individual child-weight charging inequality on the inverse tree of 3 (Lemma 20)"
+      lean: "OuroborosChallenge.lem_weighted_tree3"
+      module: "Challenge"
+      status: proved
+      note: "Establishes (X / o)^s * w(t) <= L * NTree(o, X) from expansion and row-sum budget."
+    - source: "Improved unconditional basin-of-5 lower bound via child-weight charging (Theorem 8, Part 2)"
+      lean: "OuroborosChallenge.thm_basin5_sharp"
+      module: "Challenge"
+      status: proved
+      note: "N5(X) >= (98959 / (2269527 * 3^(13/20))) * X^(13/20) for every X >= 3."
+    - source: "Explicit decimal basin-of-5 lower bound N5(X) > 0.02134 * X^(13/20)"
+      lean: "OuroborosChallenge.thm_basin5_sharp_gt"
+      module: "Challenge"
+      status: proved
+      note: "Holds unconditionally for every integer X >= 3 via pure-kernel row-sum cap."
+    - source: "Complete all-even-base non-descent stopping dichotomy (Theorem 11)"
+      lean: "OuroborosChallenge.thm_even_stopping"
+      module: "Challenge"
+      status: proved
+      note: "Exact densities p_k(b) -> p_infty(b) with p_infty(b) = 0 iff b in {2, 4, 6, 10}."
+    - source: "Exact 2-adic Cantor closure, ultrametric isometry, Hausdorff/box dimension, and elementary bounds (Theorem 18)"
+      lean: "OuroborosChallenge.thm_cantor"
+      module: "Challenge"
+      status: proved
+      note: "2-adic closure of B_1, isometry onto Sigma / 000 Sigma u 001 Sigma, dim_H = dim_B = beta, and a_1^9 X^gamma <= N_1(floor X) <= X^beta."
+    - source: "Congruence-class completion dichotomy for B_5 and B_1 (Theorem 29)"
+      lean: "OuroborosChallenge.thm_suffix_class"
+      module: "Challenge"
+      status: proved
+      note: "Every a mod m has infinitely many members of B_5; exact live-residue criterion mod 30 * 2^h for B_1."
+    - source: "Exact Hausdorff and box-counting dimension of reversed base-b suffix closures (Corollary 30)"
+      lean: "OuroborosChallenge.cor_suffix_dimension"
+      module: "Challenge"
+      status: proved
+      note: "dim_H = dim_B = (log u + t log lambda) / log b for B_1 in base b = 2^t u; 8-d.p. values in bases 2, 10, 7; full interval [0, 1] for B_5."
+
+acknowledgements: "Built on Lean 4 and Mathlib."
